@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZNZ | News Trading Database</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        discord: {
+                            bg: '#1E1F22',
+                            card: '#2B2D31',
+                            border: '#383A40',
+                            blurple: '#5865F2',
+                            green: '#23A55A',
+                            red: '#F23F43',
+                            text: '#F2F3F5',
+                            muted: '#949BA4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1E1F22;
+            color: #F2F3F5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 max-w-5xl mx-auto">
 
+    <!-- Header Navigation -->
+    <header class="flex justify-between items-center pb-6 mb-8 border-b border-discord-border">
+        <div class="flex items-center gap-3">
+            <img src="logo.png" alt="ZNZ Logo" class="w-9 h-9 rounded-md object-contain" onerror="this.style.display='none'">
+            <div>
+                <h1 class="text-lg font-bold tracking-tight text-white leading-none">ZNZ</h1>
+                <p class="text-xs text-discord-muted mt-1">News Trading Database</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <img src="xauusd.png" alt="XAUUSD" class="w-5 h-5 object-contain" onerror="this.style.display='none'">
+            <span class="px-3 py-1 text-xs font-medium rounded-full bg-discord-card border border-discord-border text-discord-muted flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-discord-green"></span> Live Tracked
+            </span>
+        </div>
+    </header>
+
+    <!-- Top KPI Summary -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+        <div class="bg-discord-card border border-discord-border rounded-xl p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-discord-muted mb-1">Winrate</p>
+            <p id="stat-winrate" class="text-3xl font-extrabold text-discord-green">0%</p>
+        </div>
+        <div class="bg-discord-card border border-discord-border rounded-xl p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-discord-muted mb-1">Total Pips</p>
+            <p id="stat-pips" class="text-3xl font-extrabold text-white">0</p>
+        </div>
+        <div class="bg-discord-card border border-discord-border rounded-xl p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-discord-muted mb-1">Streak</p>
+            <p id="stat-streak" class="text-3xl font-extrabold text-discord-blurple">0 Streak</p>
+        </div>
+    </section>
+
+    <!-- Upcoming News Section -->
+    <section class="mb-10">
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-1 h-4 bg-discord-blurple rounded-full"></div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-discord-muted">Upcoming News</h2>
+        </div>
+        <div id="upcoming-container" class="space-y-3">
+            <div class="text-xs text-discord-muted py-4 text-center">Loading upcoming news...</div>
+        </div>
+    </section>
+
+    <!-- Past News Section -->
+    <section>
+        <div class="flex items-center gap-2 mb-4">
+            <div class="w-1 h-4 bg-discord-muted rounded-full"></div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-discord-muted">Past News</h2>
+        </div>
+        <div id="past-container" class="space-y-3">
+            <div class="text-xs text-discord-muted py-4 text-center">Loading past news...</div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
