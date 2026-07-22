@@ -35,12 +35,12 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
         }
 
-        /* 100% Height Side Glow for News Cards */
-        .glow-card-side {
+        /* Side Glow - Purple (Upcoming) */
+        .glow-card-purple {
             position: relative;
             overflow: hidden;
         }
-        .glow-card-side::after {
+        .glow-card-purple::after {
             content: '';
             position: absolute;
             top: 0;
@@ -51,6 +51,42 @@
             border-top-right-radius: 0.75rem;
             border-bottom-right-radius: 0.75rem;
             box-shadow: -4px 0 22px 6px rgba(99, 102, 241, 0.95);
+        }
+
+        /* Side Glow - Green (Past Win) */
+        .glow-card-green {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card-green::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 4px;
+            background: #22C55E;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            box-shadow: -4px 0 22px 6px rgba(34, 197, 94, 0.95);
+        }
+
+        /* Side Glow - Red (Past Loss) */
+        .glow-card-red {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card-red::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 4px;
+            background: #EF4444;
+            border-top-right-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            box-shadow: -4px 0 22px 6px rgba(239, 68, 68, 0.95);
         }
 
         /* Bottom Edge Glow - Green (Winrate) */
@@ -95,16 +131,15 @@
     <!-- Header Navigation -->
     <header class="flex justify-between items-center pb-6 mb-8 border-b border-znz-border">
         <div class="flex items-center gap-3">
-            <img src="logo.png" alt="ZNZ Logo" class="w-9 h-9 rounded-md object-contain" onerror="this.style.display='none'">
+            <img src="logo.png" alt="ZNZ Logo" class="w-8 h-8 sm:w-9 sm:h-9 rounded-md object-contain" onerror="this.style.display='none'">
             <div>
-                <h1 class="text-lg font-bold tracking-tight text-white leading-none">ZNZ</h1>
-                <p class="text-xs text-znz-muted mt-1">News Trading Database</p>
+                <h1 class="text-base sm:text-lg font-bold tracking-tight text-white leading-none">ZNZ</h1>
+                <p class="text-[10px] sm:text-xs text-znz-muted mt-1">News Trading Database</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <!-- Circular XAUUSD Logo -->
-            <img src="xauusd.png" alt="XAUUSD" class="w-5 h-5 rounded-full object-cover" onerror="this.style.display='none'">
-            <span class="px-3 py-1 text-xs font-medium rounded-full bg-znz-card border border-znz-border text-znz-muted flex items-center gap-2">
+            <img src="xauusd.png" alt="XAUUSD" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover" onerror="this.style.display='none'">
+            <span class="px-2.5 py-1 text-[11px] sm:text-xs font-medium rounded-full bg-znz-card border border-znz-border text-znz-muted flex items-center gap-2">
                 <span class="relative flex h-2 w-2">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-znz-green opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-znz-green"></span>
@@ -114,40 +149,40 @@
         </div>
     </header>
 
-    <!-- Top KPI Summary Section -->
-    <section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+    <!-- Top KPI Summary Section (2x2 on Mobile, 1x4 on Desktop) -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
         
-        <!-- Winrate (Bottom Green Glow) -->
-        <div class="glow-bottom-green bg-znz-card border border-znz-border rounded-xl p-5 flex flex-col items-center justify-center text-center">
-            <p class="text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
-            <p id="stat-winrate" class="text-3xl font-extrabold text-white">0%</p>
+        <!-- Winrate -->
+        <div class="glow-bottom-green bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
+            <p id="stat-winrate" class="text-2xl sm:text-3xl font-extrabold text-white">0%</p>
         </div>
 
-        <!-- Wins Box -->
-        <div class="bg-znz-card border border-znz-border rounded-xl p-5 flex flex-col items-center justify-center text-center">
-            <p class="text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
-            <p id="stat-wins" class="text-3xl font-extrabold text-znz-green">0</p>
+        <!-- Wins -->
+        <div class="bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
+            <p id="stat-wins" class="text-2xl sm:text-3xl font-extrabold text-znz-green">0</p>
         </div>
 
-        <!-- Losses Box -->
-        <div class="bg-znz-card border border-znz-border rounded-xl p-5 flex flex-col items-center justify-center text-center">
-            <p class="text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
-            <p id="stat-losses" class="text-3xl font-extrabold text-znz-red">0</p>
+        <!-- Losses -->
+        <div class="bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
+            <p id="stat-losses" class="text-2xl sm:text-3xl font-extrabold text-znz-red">0</p>
         </div>
 
-        <!-- Streak (Bottom Red Glow) -->
-        <div class="glow-bottom-red bg-znz-card border border-znz-border rounded-xl p-5 flex flex-col items-center justify-center text-center">
-            <p class="text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">STREAK</p>
-            <p id="stat-streak" class="text-3xl font-extrabold text-white">0 Streak</p>
+        <!-- Streak -->
+        <div class="glow-bottom-red bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+            <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">STREAK</p>
+            <p id="stat-streak" class="text-2xl sm:text-3xl font-extrabold text-white">0 Streak</p>
         </div>
 
     </section>
 
     <!-- Upcoming News Section -->
-    <section class="mb-10">
+    <section class="mb-8 sm:mb-10">
         <div class="flex items-center gap-2 mb-4">
             <div class="w-1 h-4 bg-znz-purple rounded-full"></div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-znz-muted">Upcoming News</h2>
+            <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-znz-muted">Upcoming News</h2>
         </div>
         <div id="upcoming-container" class="space-y-3">
             <div class="text-xs text-znz-muted py-4 text-center">Loading upcoming news...</div>
@@ -158,7 +193,7 @@
     <section>
         <div class="flex items-center gap-2 mb-4">
             <div class="w-1 h-4 bg-znz-muted rounded-full"></div>
-            <h2 class="text-sm font-bold uppercase tracking-wider text-znz-muted">Past News</h2>
+            <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-znz-muted">Past News</h2>
         </div>
         <div id="past-container" class="space-y-3">
             <div class="text-xs text-znz-muted py-4 text-center">Loading past news...</div>
