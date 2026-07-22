@@ -1,1 +1,50 @@
-
+[
+  {
+    "date": "30 Jul 2026 — 19:30 WIB",
+    "event": "Core PCE & FOMC",
+    "actual": "",
+    "forecast": "2.3%",
+    "previous": "2.5%",
+    "trend": "UP",
+    "strategy": "BUY",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "Waiting for rate decision statement."
+  },
+  {
+    "date": "Rabu, 15 Jul 2026 — 19:30 WIB",
+    "event": "US PPI & Core PPI",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "trend": "UP",
+    "strategy": "BUY",
+    "pips": "700",
+    "result": "WIN",
+    "notes": "PPI Release"
+  },
+  {
+    "date": "Selasa, 14 Jul 2026 — 19:30 WIB",
+    "event": "US CPI & Core CPI",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "trend": "UP",
+    "strategy": "BUY",
+    "pips": "300",
+    "result": "WIN",
+    "notes": "CPI Release"
+  },
+  {
+    "date": "Senin, 06 Jul 2026 — 21:00 WIB",
+    "event": "US ISM Services PMI",
+    "actual": "-",
+    "forecast": "-",
+    "previous": "-",
+    "trend": "DOWN",
+    "strategy": "SELL",
+    "pips": "100",
+    "result": "WIN",
+    "notes": "ISM Services PMI Release"
+  }
+]
