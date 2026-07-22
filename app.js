@@ -26,8 +26,9 @@ function renderMetrics(data) {
     const winrate = completedTrades.length > 0 ? Math.round((wins / completedTrades.length) * 100) : 0;
     document.getElementById('stat-winrate').innerText = `${winrate}%`;
 
-    // Wins | Losses display
-    document.getElementById('stat-wins-losses').innerText = `${wins} | ${losses}`;
+    // Wins & Losses
+    document.getElementById('stat-wins').innerText = wins;
+    document.getElementById('stat-losses').innerText = losses;
 
     // Streak calculation
     let streak = 0;
@@ -82,19 +83,19 @@ function createNewsCard(item, isUpcoming) {
         formattedPips = cleanPips ? `${cleanPips}+` : '-';
     }
 
-    // Dynamic Actual value coloring (Green for Buy wins / Red for Sell wins)
+    // Dynamic Actual value coloring
     let actualColorClass = 'text-white';
     if (!isUpcoming && item.actual) {
         actualColorClass = isBuy ? 'text-znz-green' : 'text-znz-red';
     }
 
-    // Card wrapper with side glow
-    card.className = `glow-card bg-znz-card border ${isUpcoming ? 'border-znz-purple/40' : 'border-znz-border'} rounded-xl p-5 hover:border-znz-border/80 transition`;
+    // Full top-to-bottom side glow card
+    card.className = `glow-card-side bg-znz-card border ${isUpcoming ? 'border-znz-purple/50' : 'border-znz-border'} rounded-xl p-5 hover:border-znz-border/80 transition`;
 
     card.innerHTML = `
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pr-4">
             
-            <!-- Left Info: Event & Strategy Badges -->
+            <!-- Left Info -->
             <div class="space-y-1.5">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="text-base font-bold text-white">${item.event || 'News Event'}</span>
@@ -105,7 +106,7 @@ function createNewsCard(item, isUpcoming) {
                 <p class="text-xs text-znz-muted">${item.date || 'TBD'}</p>
             </div>
 
-            <!-- Right Info: Clean Borderless Data Grid & Pips -->
+            <!-- Right Info Grid & Pips -->
             <div class="flex items-center gap-8">
                 
                 <div class="grid grid-cols-3 gap-x-6 text-left">
