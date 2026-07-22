@@ -1,50 +1,74 @@
 [
   {
-    "date": "30 Jul 2026 — 19:30 WIB",
-    "event": "Core PCE & FOMC",
-    "actual": "",
-    "forecast": "2.3%",
-    "previous": "2.5%",
-    "trend": "UP",
-    "strategy": "BUY",
-    "pips": "",
-    "result": "PENDING",
-    "notes": "Waiting for rate decision statement."
-  },
-  {
     "date": "Rabu, 15 Jul 2026 — 19:30 WIB",
     "event": "US PPI & Core PPI",
-    "actual": "-",
-    "forecast": "-",
-    "previous": "-",
+    "actual": "-0.3%",
+    "forecast": "0.0%",
+    "previous": "0.6%",
     "trend": "UP",
     "strategy": "BUY",
     "pips": "700",
     "result": "WIN",
-    "notes": "PPI Release"
+    "notes": "PPI m/m Release"
   },
   {
     "date": "Selasa, 14 Jul 2026 — 19:30 WIB",
     "event": "US CPI & Core CPI",
-    "actual": "-",
-    "forecast": "-",
-    "previous": "-",
+    "actual": "-0.4%",
+    "forecast": "-0.1%",
+    "previous": "0.5%",
     "trend": "UP",
     "strategy": "BUY",
     "pips": "300",
     "result": "WIN",
-    "notes": "CPI Release"
+    "notes": "CPI m/m & Core CPI Release"
   },
   {
     "date": "Senin, 06 Jul 2026 — 21:00 WIB",
     "event": "US ISM Services PMI",
-    "actual": "-",
-    "forecast": "-",
-    "previous": "-",
+    "actual": "54.0",
+    "forecast": "54.2",
+    "previous": "54.5",
     "trend": "DOWN",
     "strategy": "SELL",
     "pips": "100",
     "result": "WIN",
     "notes": "ISM Services PMI Release"
+  },
+  {
+    "date": "Kamis, 02 Jul 2026 — 19:30 WIB",
+    "event": "US Non-Farm Payrolls (NFP)",
+    "actual": "57K",
+    "forecast": "114K",
+    "previous": "129K",
+    "trend": "UP",
+    "strategy": "BUY",
+    "pips": "700",
+    "result": "WIN",
+    "notes": "Non-Farm Employment Change & Unemployment Rate"
+  },
+  {
+    "date": "Kamis, 25 Jun 2026 — 19:30 WIB",
+    "event": "US Final GDP & Core PCE",
+    "actual": "2.1%",
+    "forecast": "1.6%",
+    "previous": "1.6%",
+    "trend": "UP",
+    "strategy": "BUY",
+    "pips": "400",
+    "result": "WIN",
+    "notes": "Final GDP q/q, Durable Goods & Claims"
+  },
+  {
+    "date": "Kamis, 18 Jun 2026 — 01:00 WIB",
+    "event": "FOMC Rate & Projections (FFR)",
+    "actual": "3.75%",
+    "forecast": "3.75%",
+    "previous": "3.75%",
+    "trend": "DOWN",
+    "strategy": "SELL",
+    "pips": "1000",
+    "result": "WIN",
+    "notes": "Keputusan Suku Bunga FFR & Ringkasan Proyeksi Ekonomi"
   }
 ]
