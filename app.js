@@ -1,3 +1,5 @@
+let countdownIntervals = [];
+
 async function loadNewsDatabase() {
     try {
         const response = await fetch('data.json');
@@ -46,6 +48,10 @@ function renderNewsFeeds(data) {
     const upcomingContainer = document.getElementById('upcoming-container');
     const pastContainer = document.getElementById('past-container');
 
+    // Clear old timer intervals
+    countdownIntervals.forEach(clearInterval);
+    countdownIntervals = [];
+
     upcomingContainer.innerHTML = '';
     pastContainer.innerHTML = '';
 
@@ -55,8 +61,8 @@ function renderNewsFeeds(data) {
     if (upcoming.length === 0) {
         upcomingContainer.innerHTML = '<div class="text-xs text-znz-muted p-4 bg-znz-card border border-znz-border rounded-xl">No scheduled upcoming news events.</div>';
     } else {
-        upcoming.forEach(item => {
-            upcomingContainer.appendChild(createNewsCard(item, true));
+        upcoming.forEach((item, index) => {
+            upcomingContainer.appendChild(createNewsCard(item, true, index));
         });
     }
 
@@ -69,11 +75,14 @@ function renderNewsFeeds(data) {
     }
 }
 
-function createNewsCard(item, isUpcoming) {
+function createNewsCard(item, isUpcoming, index = 0) {
     const card = document.createElement('div');
     const isWin = item.result && item.result.toUpperCase() === 'WIN';
     const isBuy = item.strategy && item.strategy.toUpperCase() === 'BUY';
-    const trendArrow = item.trend && item.trend.toUpperCase() === 'UP' ? '↑' : '↓';
+    const hasStrategy = item.strategy && item.strategy !== '-' && item.strategy.trim() !== '';
+    const hasTrend = item.trend && item.trend !== '-' && item.trend.trim() !== '';
+    
+    const trendArrow = item.trend && item.trend.toUpperCase() === 'UP' ? '↑' : (item.trend && item.trend.toUpperCase() === 'DOWN' ? '↓' : '');
     const trendColor = item.trend && item.trend.toUpperCase() === 'UP' ? 'text-znz-green' : 'text-znz-red';
 
     // Format pips
@@ -89,7 +98,8 @@ function createNewsCard(item, isUpcoming) {
         actualColorClass = isBuy ? 'text-znz-green' : 'text-znz-red';
     }
 
-    // Full top-to-bottom side glow card
+    const timerId = `timer-${index}`;
+
     card.className = `glow-card-side bg-znz-card border ${isUpcoming ? 'border-znz-purple/50' : 'border-znz-border'} rounded-xl p-5 hover:border-znz-border/80 transition`;
 
     card.innerHTML = `
@@ -99,16 +109,20 @@ function createNewsCard(item, isUpcoming) {
             <div class="space-y-1.5">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="text-base font-bold text-white">${item.event || 'News Event'}</span>
-                    <span class="${trendColor} font-bold text-base">${trendArrow}</span>
-                    ${item.strategy ? `<span class="px-2.5 py-0.5 text-xs font-bold ${isBuy ? 'bg-znz-green/10 text-znz-green border border-znz-green/20' : 'bg-znz-red/10 text-znz-red border border-znz-red/20'} rounded">${item.strategy}</span>` : ''}
-                    ${isUpcoming ? `<span class="px-2.5 py-0.5 text-xs font-bold bg-znz-purple/20 text-znz-purple border border-znz-purple/30 rounded">SCHEDULED</span>` : `<span class="px-2.5 py-0.5 text-xs font-bold ${isWin ? 'bg-znz-green text-white' : 'bg-znz-red text-white'} rounded">${item.result}</span>`}
+                    
+                    ${hasTrend && trendArrow ? `<span class="${trendColor} font-bold text-base">${trendArrow}</span>` : ''}
+                    ${hasStrategy ? `<span class="px-2.5 py-0.5 text-xs font-bold ${isBuy ? 'bg-znz-green/10 text-znz-green border border-znz-green/20' : 'bg-znz-red/10 text-znz-red border border-znz-red/20'} rounded">${item.strategy}</span>` : ''}
+                    
+                    ${isUpcoming 
+                        ? `<span id="${timerId}" class="px-2.5 py-0.5 text-xs font-mono font-bold bg-znz-purple/20 text-znz-purple border border-znz-purple/30 rounded">SCHEDULED</span>` 
+                        : `<span class="px-2.5 py-0.5 text-xs font-bold ${isWin ? 'bg-znz-green text-white' : 'bg-znz-red text-white'} rounded">${item.result}</span>`
+                    }
                 </div>
                 <p class="text-xs text-znz-muted">${item.date || 'TBD'}</p>
             </div>
 
             <!-- Right Info Grid & Pips -->
             <div class="flex items-center gap-8">
-                
                 <div class="grid grid-cols-3 gap-x-6 text-left">
                     <div>
                         <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">ACTUAL</p>
@@ -128,13 +142,47 @@ function createNewsCard(item, isUpcoming) {
                     <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">PIPS</p>
                     <p class="text-sm font-bold ${isUpcoming ? 'text-znz-muted' : 'text-znz-green'} mt-0.5">${formattedPips}</p>
                 </div>
-
             </div>
         </div>
         ${item.notes ? `<div class="mt-4 pt-3 border-t border-znz-border/50 text-xs text-znz-muted">${item.notes}</div>` : ''}
     `;
 
+    // Initialize Countdown Timer for Upcoming Events
+    if (isUpcoming && item.isoDate) {
+        startTimer(item.isoDate, timerId);
+    }
+
     return card;
+}
+
+function startTimer(targetIsoDate, elementId) {
+    const targetTime = new Date(targetIsoDate).getTime();
+
+    function updateTimer() {
+        const now = new Date().getTime();
+        const difference = targetTime - now;
+
+        const el = document.getElementById(elementId);
+        if (!el) return;
+
+        if (difference <= 0) {
+            el.className = "px-2.5 py-0.5 text-xs font-bold bg-znz-red/20 text-znz-red border border-znz-red/30 rounded animate-pulse";
+            el.innerText = "LIVE NOW";
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        const pad = n => n.toString().padStart(2, '0');
+        el.innerText = `SCHEDULED • ${pad(days)}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+    }
+
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    countdownIntervals.push(interval);
 }
 
 loadNewsDatabase();
