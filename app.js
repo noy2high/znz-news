@@ -98,53 +98,60 @@ function createNewsCard(item, isUpcoming, index = 0) {
         actualColorClass = isBuy ? 'text-znz-green' : 'text-znz-red';
     }
 
+    // Dynamic Side Glow Class Determination
+    let glowClass = 'glow-card-purple';
+    if (!isUpcoming) {
+        glowClass = isWin ? 'glow-card-green' : 'glow-card-red';
+    }
+
     const timerId = `timer-${index}`;
 
-    card.className = `glow-card-side bg-znz-card border ${isUpcoming ? 'border-znz-purple/50' : 'border-znz-border'} rounded-xl p-5 hover:border-znz-border/80 transition`;
+    card.className = `${glowClass} bg-znz-card border ${isUpcoming ? 'border-znz-purple/50' : 'border-znz-border'} rounded-xl p-4 sm:p-5 hover:border-znz-border/80 transition`;
 
     card.innerHTML = `
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pr-4">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 pr-3 sm:pr-4">
             
-            <!-- Left Info -->
-            <div class="space-y-1.5">
-                <div class="flex items-center gap-3 flex-wrap">
-                    <span class="text-base font-bold text-white">${item.event || 'News Event'}</span>
+            <!-- Left Info Header -->
+            <div class="space-y-1">
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                    <span class="text-sm sm:text-base font-bold text-white">${item.event || 'News Event'}</span>
                     
-                    ${hasTrend && trendArrow ? `<span class="${trendColor} font-bold text-base">${trendArrow}</span>` : ''}
-                    ${hasStrategy ? `<span class="px-2.5 py-0.5 text-xs font-bold ${isBuy ? 'bg-znz-green/10 text-znz-green border border-znz-green/20' : 'bg-znz-red/10 text-znz-red border border-znz-red/20'} rounded">${item.strategy}</span>` : ''}
+                    ${hasTrend && trendArrow ? `<span class="${trendColor} font-bold text-sm sm:text-base">${trendArrow}</span>` : ''}
+                    ${hasStrategy ? `<span class="px-2 py-0.5 text-[10px] sm:text-xs font-bold ${isBuy ? 'bg-znz-green/10 text-znz-green border border-znz-green/20' : 'bg-znz-red/10 text-znz-red border border-znz-red/20'} rounded">${item.strategy}</span>` : ''}
                     
                     ${isUpcoming 
-                        ? `<span id="${timerId}" class="px-2.5 py-0.5 text-xs font-mono font-bold bg-znz-purple/20 text-znz-purple border border-znz-purple/30 rounded">SCHEDULED</span>` 
-                        : `<span class="px-2.5 py-0.5 text-xs font-bold ${isWin ? 'bg-znz-green text-white' : 'bg-znz-red text-white'} rounded">${item.result}</span>`
+                        ? `<span id="${timerId}" class="px-2 py-0.5 text-[10px] sm:text-xs font-mono font-bold bg-znz-purple/20 text-znz-purple border border-znz-purple/30 rounded">SCHEDULED</span>` 
+                        : `<span class="px-2 py-0.5 text-[10px] sm:text-xs font-bold ${isWin ? 'bg-znz-green text-white' : 'bg-znz-red text-white'} rounded">${item.result}</span>`
                     }
                 </div>
-                <p class="text-xs text-znz-muted">${item.date || 'TBD'}</p>
+                <p class="text-[11px] sm:text-xs text-znz-muted">${item.date || 'TBD'}</p>
             </div>
 
-            <!-- Right Info Grid & Pips -->
-            <div class="flex items-center gap-8">
-                <div class="grid grid-cols-3 gap-x-6 text-left">
+            <!-- Right Info Grid & Pips (Responsive Layout) -->
+            <div class="flex items-center justify-between lg:justify-end gap-4 sm:gap-8 pt-2 lg:pt-0 border-t border-znz-border/30 lg:border-t-0">
+                <div class="grid grid-cols-3 gap-x-4 sm:gap-x-6 text-left">
                     <div>
-                        <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">ACTUAL</p>
-                        <p class="text-sm font-semibold ${actualColorClass} mt-0.5">${item.actual || '-'}</p>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-znz-muted uppercase tracking-wider">ACTUAL</p>
+                        <p class="text-xs sm:text-sm font-semibold ${actualColorClass} mt-0.5">${item.actual || '-'}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">FORECAST</p>
-                        <p class="text-sm font-semibold text-white mt-0.5">${item.forecast || '-'}</p>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-znz-muted uppercase tracking-wider">FORECAST</p>
+                        <p class="text-xs sm:text-sm font-semibold text-white mt-0.5">${item.forecast || '-'}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">PREVIOUS</p>
-                        <p class="text-sm font-semibold text-white mt-0.5">${item.previous || '-'}</p>
+                        <p class="text-[9px] sm:text-[10px] font-semibold text-znz-muted uppercase tracking-wider">PREVIOUS</p>
+                        <p class="text-xs sm:text-sm font-semibold text-white mt-0.5">${item.previous || '-'}</p>
                     </div>
                 </div>
 
-                <div class="text-right min-w-[60px]">
-                    <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider">PIPS</p>
-                    <p class="text-sm font-bold ${isUpcoming ? 'text-znz-muted' : 'text-znz-green'} mt-0.5">${formattedPips}</p>
+                <div class="text-right min-w-[50px] sm:min-w-[60px]">
+                    <p class="text-[9px] sm:text-[10px] font-semibold text-znz-muted uppercase tracking-wider">PIPS</p>
+                    <p class="text-xs sm:text-sm font-bold ${isUpcoming ? 'text-znz-muted' : 'text-znz-green'} mt-0.5">${formattedPips}</p>
                 </div>
             </div>
+
         </div>
-        ${item.notes ? `<div class="mt-4 pt-3 border-t border-znz-border/50 text-xs text-znz-muted">${item.notes}</div>` : ''}
+        ${item.notes ? `<div class="mt-3 pt-2 sm:pt-3 border-t border-znz-border/50 text-[11px] sm:text-xs text-znz-muted">${item.notes}</div>` : ''}
     `;
 
     // Initialize Countdown Timer for Upcoming Events
@@ -166,7 +173,7 @@ function startTimer(targetIsoDate, elementId) {
         if (!el) return;
 
         if (difference <= 0) {
-            el.className = "px-2.5 py-0.5 text-xs font-bold bg-znz-red/20 text-znz-red border border-znz-red/30 rounded animate-pulse";
+            el.className = "px-2 py-0.5 text-[10px] sm:text-xs font-bold bg-znz-red/20 text-znz-red border border-znz-red/30 rounded animate-pulse";
             el.innerText = "LIVE NOW";
             return;
         }
