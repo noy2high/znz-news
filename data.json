@@ -1,6 +1,46 @@
 [
   {
+    "date": "Kamis, 30 Jul 2026 — 01:00 WIB",
+    "isoDate": "2026-07-30T01:00:00+07:00",
+    "event": "FOMC Rate & Statement",
+    "actual": "",
+    "forecast": "3.75%",
+    "previous": "3.75%",
+    "trend": "-",
+    "strategy": "-",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "Federal Funds Rate & FOMC Statement"
+  },
+  {
+    "date": "Kamis, 30 Jul 2026 — 01:30 WIB",
+    "isoDate": "2026-07-30T01:30:00+07:00",
+    "event": "FOMC Press Conference",
+    "actual": "",
+    "forecast": "-",
+    "previous": "-",
+    "trend": "-",
+    "strategy": "-",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "Konferensi Pers Powell"
+  },
+  {
+    "date": "Kamis, 30 Jul 2026 — 19:30 WIB",
+    "isoDate": "2026-07-30T19:30:00+07:00",
+    "event": "US Advance GDP & Core PCE",
+    "actual": "",
+    "forecast": "2.1%",
+    "previous": "0.3%",
+    "trend": "-",
+    "strategy": "-",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "Advance GDP q/q & Core PCE Price Index m/m"
+  },
+  {
     "date": "Rabu, 15 Jul 2026 — 19:30 WIB",
+    "isoDate": "2026-07-15T19:30:00+07:00",
     "event": "US PPI & Core PPI",
     "actual": "-0.3%",
     "forecast": "0.0%",
@@ -13,6 +53,7 @@
   },
   {
     "date": "Selasa, 14 Jul 2026 — 19:30 WIB",
+    "isoDate": "2026-07-14T19:30:00+07:00",
     "event": "US CPI & Core CPI",
     "actual": "-0.4%",
     "forecast": "-0.1%",
@@ -25,6 +66,7 @@
   },
   {
     "date": "Senin, 06 Jul 2026 — 21:00 WIB",
+    "isoDate": "2026-07-06T21:00:00+07:00",
     "event": "US ISM Services PMI",
     "actual": "54.0",
     "forecast": "54.2",
@@ -37,6 +79,7 @@
   },
   {
     "date": "Kamis, 02 Jul 2026 — 19:30 WIB",
+    "isoDate": "2026-07-02T19:30:00+07:00",
     "event": "US Non-Farm Payrolls (NFP)",
     "actual": "57K",
     "forecast": "114K",
@@ -49,6 +92,7 @@
   },
   {
     "date": "Kamis, 25 Jun 2026 — 19:30 WIB",
+    "isoDate": "2026-06-25T19:30:00+07:00",
     "event": "US Final GDP & Core PCE",
     "actual": "2.1%",
     "forecast": "1.6%",
@@ -61,6 +105,7 @@
   },
   {
     "date": "Kamis, 18 Jun 2026 — 01:00 WIB",
+    "isoDate": "2026-06-18T01:00:00+07:00",
     "event": "FOMC Rate & Projections (FFR)",
     "actual": "3.75%",
     "forecast": "3.75%",
