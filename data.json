@@ -1,17 +1,16 @@
 [
   {
-    "date": "Kamis, 30 Jul 2026 — 01:00 WIB",
-    "isoDate": "2026-07-30T01:00:00+07:00",
-    "event": "FOMC Rate & Statement",
-    "actual": "",
-    "forecast": "3.75%",
-    "previous": "3.75%",
-    "trend": "-",
-    "strategy": "-",
-    "pips": "",
-    "result": "PENDING",
-    "notes": "Federal Funds Rate & FOMC Statement"
-  },
+  "id": "fomc-rate-july-2026",
+  "title": "FOMC Rate & Statement",
+  "date": "Kamis, 30 Jul 2026 — 01:00 WIB",
+  "actual": "3.75%",
+  "forecast": "3.75%",
+  "previous": "3.75%",
+  "pips": "-400",
+  "result": "LOSS",
+  "status": "PAST",
+  "glowClass": "glow-card-red"
+},
   {
     "date": "Kamis, 30 Jul 2026 — 01:30 WIB",
     "isoDate": "2026-07-30T01:30:00+07:00",
