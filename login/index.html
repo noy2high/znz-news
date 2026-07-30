@@ -41,48 +41,67 @@
             box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.35), 0 0 15px -2px rgba(99, 102, 241, 0.2);
         }
 
-        /* Horizontal Left-to-Right Floating Keyframes */
-        @keyframes floatHorizontal {
-            0% { transform: translateX(-20vw); opacity: 0; }
-            20% { opacity: 0.22; }
-            80% { opacity: 0.22; }
-            100% { transform: translateX(120vw); opacity: 0; }
+        /* Star Twinkle Animation */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 0.8; transform: scale(1.2); }
         }
 
-        .animate-candle-horizon {
-            animation: floatHorizontal 16s infinite linear;
+        .star {
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 50%;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        /* Shooting Star Animation */
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(0) translateY(0) rotate(-35deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+                scale: 1;
+            }
+            30% {
+                transform: translateX(-400px) translateY(280px) rotate(-35deg) scale(1);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(-400px) translateY(280px) rotate(-35deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(-45deg, rgba(99, 102, 241, 0.9), rgba(255, 255, 255, 0));
+            filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.8));
+            border-radius: 999px;
+            animation: shootingStar 10s infinite linear;
         }
     </style>
 </head>
 <body class="min-h-screen bg-black flex items-center justify-center p-3 sm:p-6 relative overflow-hidden">
 
-    <!-- Ambient Blurry Candlestick Horizontal Background Noise -->
-    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-25 filter blur-lg">
+    <!-- Starry Night & Shooting Star Background Layer -->
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         
-        <!-- Bullish Green Candle 1 (Upper Horizon) -->
-        <div class="absolute top-[20%] w-6 h-36 bg-znz-green rounded-sm animate-candle-horizon flex items-center justify-center" style="animation-delay: 0s; animation-duration: 18s;">
-            <div class="w-1 h-52 bg-znz-green absolute"></div>
-        </div>
+        <!-- Subtle Glowing Stars -->
+        <div class="star w-1 h-1 top-[12%] left-[15%]" style="animation-delay: 0s;"></div>
+        <div class="star w-1.5 h-1.5 top-[25%] left-[80%]" style="animation-delay: 1s;"></div>
+        <div class="star w-1 h-1 top-[40%] left-[35%]" style="animation-delay: 2s;"></div>
+        <div class="star w-2 h-2 top-[65%] left-[10%]" style="animation-delay: 0.5s;"></div>
+        <div class="star w-1 h-1 top-[75%] left-[88%]" style="animation-delay: 1.5s;"></div>
+        <div class="star w-1.5 h-1.5 top-[85%] left-[45%]" style="animation-delay: 2.5s;"></div>
+        <div class="star w-1 h-1 top-[18%] left-[60%]" style="animation-delay: 0.8s;"></div>
 
-        <!-- Bearish Red Candle 1 (Mid Horizon) -->
-        <div class="absolute top-[45%] w-8 h-44 bg-znz-red rounded-sm animate-candle-horizon flex items-center justify-center" style="animation-delay: 4s; animation-duration: 14s;">
-            <div class="w-1 h-64 bg-znz-red absolute"></div>
-        </div>
-
-        <!-- Bullish Green Candle 2 (Lower Horizon) -->
-        <div class="absolute top-[70%] w-7 h-40 bg-znz-green rounded-sm animate-candle-horizon flex items-center justify-center" style="animation-delay: 8s; animation-duration: 20s;">
-            <div class="w-1 h-56 bg-znz-green absolute"></div>
-        </div>
-
-        <!-- Bearish Red Candle 2 (High Horizon) -->
-        <div class="absolute top-[15%] w-5 h-28 bg-znz-red rounded-sm animate-candle-horizon flex items-center justify-center" style="animation-delay: 11s; animation-duration: 15s;">
-            <div class="w-1 h-44 bg-znz-red absolute"></div>
-        </div>
-
-        <!-- Bullish Green Candle 3 (Mid-Low Horizon) -->
-        <div class="absolute top-[60%] w-6 h-48 bg-znz-green rounded-sm animate-candle-horizon flex items-center justify-center" style="animation-delay: 15s; animation-duration: 17s;">
-            <div class="w-1 h-68 bg-znz-green absolute"></div>
-        </div>
+        <!-- Shooting Stars -->
+        <div class="shooting-star top-[15%] right-[10%] w-[120px]" style="animation-delay: 0s;"></div>
+        <div class="shooting-star top-[35%] right-[25%] w-[150px]" style="animation-delay: 4s;"></div>
+        <div class="shooting-star top-[10%] right-[45%] w-[100px]" style="animation-delay: 7s;"></div>
 
     </div>
 
