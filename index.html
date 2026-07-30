@@ -138,7 +138,7 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <!-- Sign In Trigger Button -->
+            <!-- Sign In / Profile Container -->
             <button id="auth-btn" onclick="openLoginModal()" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-znz-purple text-white hover:bg-znz-purple/80 transition flex items-center gap-2">
                 Sign In
             </button>
@@ -207,12 +207,12 @@
         </div>
     </section>
 
-    <!-- Auth Modal Overlay -->
-    <div id="login-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 z-50">
+    <!-- Auth Modal Overlay (Auto-pops up for unverified users) -->
+    <div id="login-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 z-50">
         <div class="relative w-full max-w-4xl bg-znz-card border border-znz-border rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
             
-            <!-- Close Button -->
-            <button onclick="closeLoginModal()" class="absolute top-4 right-4 text-znz-muted hover:text-white text-xl font-bold z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 border border-znz-border">
+            <!-- Close Button (Hidden until logged in to force auth) -->
+            <button id="modal-close-btn" onclick="closeLoginModal()" class="hidden absolute top-4 right-4 text-znz-muted hover:text-white text-xl font-bold z-10 w-8 h-8 items-center justify-center rounded-full bg-black/40 border border-znz-border">
                 ✕
             </button>
 
@@ -227,20 +227,18 @@
                         Welcome to the Community
                     </h2>
                     <p class="text-xs sm:text-sm text-znz-muted leading-relaxed">
-                        Exclusive terminal access for ZNZ members. Authenticate with your Discord account to verify your active membership.
+                        Exclusive dashboard access for ZNZ members. Authenticate with your Discord account to verify your membership.
                     </p>
                 </div>
 
-                <!-- Benefit Cards Stack -->
+                <!-- Benefit Cards Stack (Emojis Removed) -->
                 <div class="grid grid-cols-2 gap-3 mt-8">
-                    <div class="p-3 bg-black/40 border border-znz-border rounded-xl">
-                        <div class="text-znz-purple text-base mb-1">⚡</div>
-                        <p class="text-xs font-bold text-white">Live Database</p>
+                    <div class="p-4 bg-black/40 border border-znz-border rounded-xl">
+                        <p class="text-xs font-bold text-white mb-0.5">Live Database</p>
                         <p class="text-[10px] text-znz-muted">Track news execution</p>
                     </div>
-                    <div class="p-3 bg-black/40 border border-znz-border rounded-xl">
-                        <div class="text-znz-green text-base mb-1">📈</div>
-                        <p class="text-xs font-bold text-white">Chart Replay</p>
+                    <div class="p-4 bg-black/40 border border-znz-border rounded-xl">
+                        <p class="text-xs font-bold text-white mb-0.5">Chart Replay</p>
                         <p class="text-[10px] text-znz-muted">Backtest sessions</p>
                     </div>
                 </div>
@@ -256,7 +254,7 @@
 
                 <h3 class="text-xl font-bold text-white mb-2">Sign In to ZNZ</h3>
                 <p class="text-xs text-znz-muted mb-8 max-w-xs">
-                    Members are automatically assigned access upon joining our server.
+                    Verify yourself by signing in with Discord.
                 </p>
 
                 <!-- Discord SSO Button -->
