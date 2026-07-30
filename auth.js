@@ -1,70 +1,62 @@
 const DISCORD_CLIENT_ID = '1472930195324534787';
 const ZNZ_GUILD_ID = '1448366518328099004';
-const REDIRECT_URI = 'https://znz-community.vercel.app/';
-
-function openLoginModal() {
-    const modal = document.getElementById('login-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-}
-
-function closeLoginModal() {
-    const modal = document.getElementById('login-modal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-}
+const ZNZ_REQUIRED_ROLE_ID = '1472941196556107959';
+const REDIRECT_URI = 'https://znz-community.vercel.app/login/';
 
 function loginWithDiscord() {
-    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20guilds`;
+    const authUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify%20guilds%20guilds.members.read`;
     window.location.href = authUrl;
 }
 
 async function checkAuthSession() {
     let token = localStorage.getItem('znz_user_token');
 
-    // Extract access_token from URL fragment after Discord redirect
-    if (window.location.hash) {
+    // Parse Discord hash return
+    if (window.location.hash.includes('access_token')) {
         const params = new URLSearchParams(window.location.hash.substring(1));
         const newToken = params.get('access_token');
         if (newToken) {
             token = newToken;
             localStorage.setItem('znz_user_token', token);
-            window.location.hash = ''; // Clean address bar
+            window.location.hash = '';
         }
     }
 
+    // Redirect to login page if on root and unauthenticated
     if (!token) {
+        if (!window.location.pathname.includes('/login/')) {
+            window.location.replace('/login/');
+        }
         return;
     }
 
     try {
-        // Fetch user profile and joined guilds in parallel
-        const [userRes, guildsRes] = await Promise.all([
+        const [userRes, memberRes] = await Promise.all([
             fetch('https://discord.com/api/users/@me', {
                 headers: { Authorization: `Bearer ${token}` }
             }),
-            fetch('https://discord.com/api/users/@me/guilds', {
+            fetch(`https://discord.com/api/users/@me/guilds/${ZNZ_GUILD_ID}/member`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
         ]);
 
-        if (!userRes.ok || !guildsRes.ok) throw new Error('Session expired');
+        if (!userRes.ok || !memberRes.ok) throw new Error('Session invalid');
 
         const userData = await userRes.json();
-        const guilds = await guildsRes.json();
+        const memberData = await memberRes.json();
 
-        // Check if user belongs to the ZNZ Discord server
-        const isMember = guilds.some(g => g.id === ZNZ_GUILD_ID);
+        // Check required Discord role
+        const hasRole = memberData.roles && memberData.roles.includes(ZNZ_REQUIRED_ROLE_ID);
 
-        if (isMember) {
+        if (hasRole) {
+            // If logged in and still on /login/, redirect to main dashboard
+            if (window.location.pathname.includes('/login/')) {
+                window.location.replace('/');
+                return;
+            }
             renderLoggedInState(userData);
-            closeLoginModal();
         } else {
-            alert('Access Denied: You must be an active member of the ZNZ Discord server to access private tools.');
+            alert('Access Denied: You must possess the verified member role in the ZNZ Discord server.');
             logout();
         }
     } catch (err) {
@@ -80,10 +72,10 @@ function renderLoggedInState(user) {
         ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
         : 'https://cdn.discordapp.com/embed/avatars/0.png';
 
-    authBtn.outerHTML = `
-        <div class="flex items-center gap-3" id="user-profile-bar">
+    authBtn.innerHTML = `
+        <div class="flex items-center gap-3">
             <a href="replay.html" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-znz-purple text-white hover:bg-znz-purple/80 transition flex items-center gap-1.5">
-                <span>📈</span> Replay Engine
+                Replay Engine
             </a>
             <div class="flex items-center gap-2 pl-2 border-l border-znz-border">
                 <img src="${avatarUrl}" class="w-7 h-7 rounded-full border border-znz-purple" alt="${user.username}">
@@ -96,8 +88,7 @@ function renderLoggedInState(user) {
 
 function logout() {
     localStorage.removeItem('znz_user_token');
-    window.location.reload();
+    window.location.replace('/login/');
 }
 
-// Run auth check automatically on page load
 document.addEventListener('DOMContentLoaded', checkAuthSession);
