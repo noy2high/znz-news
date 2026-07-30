@@ -36,72 +36,79 @@
             overflow: hidden;
         }
 
-        /* Subtle Outer Glow for main card */
+        /* Outer Glow for main card */
         .card-subtle-glow {
-            box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.35), 0 0 15px -2px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 45px -5px rgba(99, 102, 241, 0.35), 0 0 20px -2px rgba(99, 102, 241, 0.2);
         }
 
-        /* Star Twinkle Animation */
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.2; transform: scale(0.8); }
-            50% { opacity: 0.8; transform: scale(1.2); }
+        /* Ambient Nebula Glow Background */
+        .nebula-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
         }
 
-        .star {
+        /* Soft Pulsing Dust Particles (Replaces harsh white dots) */
+        @keyframes softPulse {
+            0%, 100% { opacity: 0.1; transform: scale(0.9); }
+            50% { opacity: 0.35; transform: scale(1.1); }
+        }
+
+        .dust-particle {
             position: absolute;
-            background-color: #ffffff;
+            background: rgba(165, 180, 252, 0.4);
             border-radius: 50%;
-            animation: twinkle 3s infinite ease-in-out;
+            filter: blur(1px);
+            animation: softPulse 4s infinite ease-in-out;
         }
 
-        /* Shooting Star Animation */
-        @keyframes shootingStar {
+        /* Tapered Glowing Shooting Star Animation */
+        @keyframes streakPass {
             0% {
-                transform: translateX(0) translateY(0) rotate(-35deg) scale(0);
+                transform: translateX(0) translateY(0) rotate(-38deg);
                 opacity: 0;
+                width: 0px;
             }
-            10% {
-                opacity: 0.8;
-                scale: 1;
+            15% {
+                opacity: 0.75;
+                width: 140px;
             }
-            30% {
-                transform: translateX(-400px) translateY(280px) rotate(-35deg) scale(1);
+            35% {
+                transform: translateX(-600px) translateY(470px) rotate(-38deg);
                 opacity: 0;
+                width: 200px;
             }
             100% {
-                transform: translateX(-400px) translateY(280px) rotate(-35deg) scale(0);
+                transform: translateX(-600px) translateY(470px) rotate(-38deg);
                 opacity: 0;
+                width: 0px;
             }
         }
 
-        .shooting-star {
+        .shooting-star-streak {
             position: absolute;
-            height: 2px;
-            background: linear-gradient(-45deg, rgba(99, 102, 241, 0.9), rgba(255, 255, 255, 0));
-            filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.8));
-            border-radius: 999px;
-            animation: shootingStar 10s infinite linear;
+            height: 1.5px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(99, 102, 241, 0.6) 40%, rgba(0, 0, 0, 0) 100%);
+            border-radius: 100%;
+            filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.8));
+            animation: streakPass 8s infinite cubic-bezier(0.25, 0.1, 0.25, 1);
         }
     </style>
 </head>
 <body class="min-h-screen bg-black flex items-center justify-center p-3 sm:p-6 relative overflow-hidden">
 
-    <!-- Starry Night & Shooting Star Background Layer -->
-    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <!-- Ambient Nebula & Deep Space Layer -->
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden nebula-glow">
         
-        <!-- Subtle Glowing Stars -->
-        <div class="star w-1 h-1 top-[12%] left-[15%]" style="animation-delay: 0s;"></div>
-        <div class="star w-1.5 h-1.5 top-[25%] left-[80%]" style="animation-delay: 1s;"></div>
-        <div class="star w-1 h-1 top-[40%] left-[35%]" style="animation-delay: 2s;"></div>
-        <div class="star w-2 h-2 top-[65%] left-[10%]" style="animation-delay: 0.5s;"></div>
-        <div class="star w-1 h-1 top-[75%] left-[88%]" style="animation-delay: 1.5s;"></div>
-        <div class="star w-1.5 h-1.5 top-[85%] left-[45%]" style="animation-delay: 2.5s;"></div>
-        <div class="star w-1 h-1 top-[18%] left-[60%]" style="animation-delay: 0.8s;"></div>
+        <!-- Soft Blurry Particles -->
+        <div class="dust-particle w-1.5 h-1.5 top-[15%] left-[20%]" style="animation-delay: 0s;"></div>
+        <div class="dust-particle w-2 h-2 top-[30%] left-[82%]" style="animation-delay: 1.2s;"></div>
+        <div class="dust-particle w-1 h-1 top-[70%] left-[15%]" style="animation-delay: 2.5s;"></div>
+        <div class="dust-particle w-1.5 h-1.5 top-[80%] left-[75%]" style="animation-delay: 0.8s;"></div>
+        <div class="dust-particle w-2 h-2 top-[22%] left-[50%]" style="animation-delay: 3.1s;"></div>
 
-        <!-- Shooting Stars -->
-        <div class="shooting-star top-[15%] right-[10%] w-[120px]" style="animation-delay: 0s;"></div>
-        <div class="shooting-star top-[35%] right-[25%] w-[150px]" style="animation-delay: 4s;"></div>
-        <div class="shooting-star top-[10%] right-[45%] w-[100px]" style="animation-delay: 7s;"></div>
+        <!-- Realistic Tapered Shooting Stars -->
+        <div class="shooting-star-streak top-[10%] right-[15%]" style="animation-delay: 0s; animation-duration: 9s;"></div>
+        <div class="shooting-star-streak top-[35%] right-[5%]" style="animation-delay: 4.5s; animation-duration: 11s;"></div>
+        <div class="shooting-star-streak top-[5%] right-[45%]" style="animation-delay: 7s; animation-duration: 10s;"></div>
 
     </div>
 
