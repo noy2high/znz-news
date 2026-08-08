@@ -53,21 +53,13 @@
             touch-action: none !important;
         }
 
-        /* Alternating White & Yellow Offscreen-to-Offscreen Laser Glide */
-        @keyframes laserGlide {
+        /* Sleek Off-Screen Left to Off-Screen Right Laser Scanner */
+        @keyframes laserSweep {
             0% {
-                left: -40%;
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
+                left: -20%;
             }
             100% {
-                left: 110%;
-                opacity: 0;
+                left: 120%;
             }
         }
 
@@ -75,24 +67,24 @@
             position: absolute;
             top: 0;
             height: 2px;
-            width: 35%;
+            width: 15%; /* Sleek, non-bulky laser length */
             pointer-events: none;
             z-index: 100000;
         }
 
-        /* White Laser Beam */
+        /* 1. White Laser Beam (First) */
         .laser-white {
             background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
-            box-shadow: 0 1px 15px 3px rgba(255, 255, 255, 0.95), 0 0 30px 6px rgba(255, 255, 255, 0.6);
-            animation: laserGlide 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            box-shadow: 0 1px 12px 2px rgba(255, 255, 255, 0.9), 0 0 20px 4px rgba(255, 255, 255, 0.5);
+            animation: laserSweep 4s linear infinite;
         }
 
-        /* Yellow Laser Beam (Offset timing) */
-        .laser-yellow {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0) 0%, rgba(251, 191, 36, 1) 50%, rgba(245, 158, 11, 0) 100%);
-            box-shadow: 0 1px 15px 3px rgba(245, 158, 11, 0.95), 0 0 30px 6px rgba(245, 158, 11, 0.6);
-            animation: laserGlide 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            animation-delay: 1.8s;
+        /* 2. Amber/Orange Laser Beam (Follows White) */
+        .laser-orange {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0) 0%, rgba(245, 158, 11, 1) 50%, rgba(245, 158, 11, 0) 100%);
+            box-shadow: 0 1px 12px 2px rgba(245, 158, 11, 0.9), 0 0 20px 4px rgba(245, 158, 11, 0.5);
+            animation: laserSweep 4s linear infinite;
+            animation-delay: 2s; /* Balanced half-cycle gap */
         }
 
         /* Custom Scrollbars */
@@ -263,9 +255,9 @@
     <!-- ========================================== -->
     <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] flex flex-col items-center justify-between p-6 sm:p-8 text-center select-none pointer-events-auto overflow-hidden">
         
-        <!-- Alternating White & Yellow Top Scanner Laser Beams -->
+        <!-- Alternating White & Orange Top Scanner Laser Beams -->
         <div class="laser-beam laser-white"></div>
-        <div class="laser-beam laser-yellow"></div>
+        <div class="laser-beam laser-orange"></div>
 
         <!-- Top Spacer -->
         <div></div>
