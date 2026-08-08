@@ -46,10 +46,34 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Prevent scrolling while in maintenance mode */
+        /* Prevent scrolling & interaction in maintenance mode */
         body.maintenance-mode {
             overflow: hidden !important;
             height: 100vh !important;
+            touch-action: none !important;
+        }
+
+        /* Looping White Siren / Laser Glow Sweep Header */
+        @keyframes sirenSweep {
+            0% {
+                left: -30%;
+            }
+            50% {
+                left: 100%;
+            }
+            100% {
+                left: -30%;
+            }
+        }
+
+        .siren-glow-bar {
+            position: absolute;
+            top: 0;
+            height: 2px;
+            width: 35%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 100%);
+            box-shadow: 0 0 25px 4px rgba(255, 255, 255, 0.9), 0 0 10px 1px rgba(255, 255, 255, 0.6);
+            animation: sirenSweep 3.5s ease-in-out infinite;
         }
 
         /* Custom Scrollbars */
@@ -218,31 +242,40 @@
     <!-- ========================================== -->
     <!-- UNBYPASSABLE MAINTENANCE OVERLAY          -->
     <!-- ========================================== -->
-    <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] backdrop-blur-3xl flex flex-col items-center justify-between p-8 text-center select-none pointer-events-auto">
+    <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] flex flex-col items-center justify-between p-6 sm:p-8 text-center select-none pointer-events-auto overflow-hidden">
         
+        <!-- Looping White Siren Laser Beam Top Header -->
+        <div class="siren-glow-bar"></div>
+
         <!-- Top Spacer -->
         <div></div>
 
-        <!-- Center Content: Spinner & Notice -->
-        <div class="flex flex-col items-center justify-center space-y-6 max-w-sm">
+        <!-- Center Content: Spinner + Inner Logo + Text Stack -->
+        <div class="flex flex-col items-center justify-center space-y-6 max-w-sm px-4">
             
-            <!-- Glowing Loader Spinner -->
-            <div class="relative w-14 h-14 flex items-center justify-center">
-                <div class="absolute inset-0 rounded-full border-2 border-indigo-500/20"></div>
-                <div class="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
-                <div class="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-ping"></div>
+            <!-- Spinner Container with ZNZ Logo inside -->
+            <div class="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                <!-- Outer Ring Spinner -->
+                <div class="absolute inset-0 rounded-full border-2 border-white/10"></div>
+                <div class="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
+                
+                <!-- Inner ZNZ Logo (logo.png) -->
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-white/10 flex items-center justify-center overflow-hidden p-1 shadow-inner">
+                    <img src="logo.png" alt="ZNZ" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/32/ffffff/000000?text=ZNZ'">
+                </div>
             </div>
 
-            <!-- Maintenance Text -->
-            <div class="space-y-1">
-                <h1 class="text-lg font-bold text-white tracking-wide">Sorry! Under Maintenance.</h1>
+            <!-- Maintenance Text Stack -->
+            <div class="space-y-1.5">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Sorry!</h1>
+                <p class="text-sm sm:text-base font-semibold text-znz-muted">Under Maintenance.</p>
             </div>
 
         </div>
 
         <!-- Bottom Discord Announcement -->
-        <div class="pt-8 border-t border-white/5 w-full max-w-xs">
-            <p class="text-[11px] font-medium text-znz-muted">
+        <div class="pt-6 border-t border-white/5 w-full max-w-xs sm:max-w-sm mb-2">
+            <p class="text-[11px] sm:text-xs font-medium text-znz-muted">
                 Updates will be announced in the <a href="https://discord.gg/v5MdabQXMY" target="_blank" class="text-znz-purple hover:underline font-bold">Discord</a> shortly.
             </p>
         </div>
