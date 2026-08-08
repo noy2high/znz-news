@@ -270,15 +270,16 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     
                     <!-- 1. XAUUSD Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
+                            <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-amber-400 text-xs">
-                                        ⚡
+                                    <!-- Official Gold Icon -->
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                                     </div>
                                     <div>
-                                        <p class="text-xs text-znz-muted font-bold tracking-wider">XAU/USD</p>
+                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">XAU / USD</p>
                                         <h3 class="text-sm font-extrabold text-white">Gold Spot</h3>
                                     </div>
                                 </div>
@@ -295,13 +296,24 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-baseline gap-3 my-2">
-                                <span id="price-xau" class="text-2xl font-extrabold text-white tracking-tight">$4,341.93</span>
-                                <span id="change-xau" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+2.39%</span>
+                            <!-- Small Grey Price Header & Big Number -->
+                            <div class="mt-1">
+                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
+                            </div>
+
+                            <!-- Arrow Circle + Number Circle Badges -->
+                            <div class="flex items-center gap-2 mt-3">
+                                <span id="arrow-xau" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
+                                    ↗
+                                </span>
+                                <span id="change-xau" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
+                                    +2.39%
+                                </span>
                             </div>
                         </div>
 
-                        <div class="w-full h-28 relative mt-2">
+                        <div class="w-full h-20 relative mt-2">
                             <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="grad-xau" x1="0" y1="0" x2="0" y2="1">
@@ -316,15 +328,16 @@
                     </div>
 
                     <!-- 2. BTC/USDT Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
+                            <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center font-bold text-orange-400 text-xs">
+                                    <!-- Official Bitcoin Logo -->
+                                    <div class="w-10 h-10 rounded-xl bg-orange-500/15 border border-orange-500/30 flex items-center justify-center text-orange-400 font-bold text-lg">
                                         ₿
                                     </div>
                                     <div>
-                                        <p class="text-xs text-znz-muted font-bold tracking-wider">BTC/USDT</p>
+                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">BTC / USDT</p>
                                         <h3 class="text-sm font-extrabold text-white">Bitcoin</h3>
                                     </div>
                                 </div>
@@ -341,13 +354,22 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-baseline gap-3 my-2">
-                                <span id="price-btc" class="text-2xl font-extrabold text-white tracking-tight">$109,687.60</span>
-                                <span id="change-btc" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+1.09%</span>
+                            <div class="mt-1">
+                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
+                            </div>
+
+                            <div class="flex items-center gap-2 mt-3">
+                                <span id="arrow-btc" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
+                                    ↗
+                                </span>
+                                <span id="change-btc" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
+                                    +1.09%
+                                </span>
                             </div>
                         </div>
 
-                        <div class="w-full h-28 relative mt-2">
+                        <div class="w-full h-20 relative mt-2">
                             <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="grad-btc" x1="0" y1="0" x2="0" y2="1">
@@ -362,15 +384,16 @@
                     </div>
 
                     <!-- 3. DXY Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
                         <div>
-                            <div class="flex justify-between items-start mb-3">
+                            <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-bold text-indigo-400 text-xs">
+                                    <!-- Official USD Icon -->
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-extrabold text-lg">
                                         $
                                     </div>
                                     <div>
-                                        <p class="text-xs text-znz-muted font-bold tracking-wider">DXY / USD</p>
+                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">DXY / USD</p>
                                         <h3 class="text-sm font-extrabold text-white">US Dollar Index</h3>
                                     </div>
                                 </div>
@@ -387,13 +410,22 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-baseline gap-3 my-2">
-                                <span id="price-dxy" class="text-2xl font-extrabold text-white tracking-tight">104.34</span>
-                                <span id="change-dxy" class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full">-0.34%</span>
+                            <div class="mt-1">
+                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                            </div>
+
+                            <div class="flex items-center gap-2 mt-3">
+                                <span id="arrow-dxy" class="w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold">
+                                    ↘
+                                </span>
+                                <span id="change-dxy" class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2.5 py-1 rounded-full">
+                                    -0.34%
+                                </span>
                             </div>
                         </div>
 
-                        <div class="w-full h-28 relative mt-2">
+                        <div class="w-full h-20 relative mt-2">
                             <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
                                 <defs>
                                     <linearGradient id="grad-dxy" x1="0" y1="0" x2="0" y2="1">
@@ -409,7 +441,7 @@
 
                 </div>
 
-                <!-- NEW: MARKET OVERVIEW TABLE -->
+                <!-- MARKET OVERVIEW TABLE (Daily % column removed) -->
                 <div class="glass-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-5">
                         <div class="flex items-center gap-2">
@@ -428,7 +460,6 @@
                                     <th class="py-3 px-2 w-12">No</th>
                                     <th class="py-3 px-2">Coin name</th>
                                     <th class="py-3 px-2">Price</th>
-                                    <th class="py-3 px-2 text-right">Daily %</th>
                                     <th class="py-3 px-2 text-right">Weekly %</th>
                                     <th class="py-3 px-2 text-right">Monthly %</th>
                                     <th class="py-3 px-2 text-right">Yearly %</th>
@@ -436,7 +467,7 @@
                             </thead>
                             <tbody id="market-table-body" class="divide-y divide-znz-border/40 text-xs font-medium">
                                 <tr>
-                                    <td colspan="7" class="py-8 text-center text-znz-muted">Fetching live market performance table...</td>
+                                    <td colspan="6" class="py-8 text-center text-znz-muted">Fetching live market performance table...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -597,15 +628,25 @@
         // ==========================================
         let minutesSinceUpdate = 0;
 
-        function updateBadgeUI(elId, valNum) {
+        function updateBadgeUI(elId, arrowId, valNum) {
             const el = document.getElementById(elId);
+            const arrowEl = document.getElementById(arrowId);
             if (!el) return;
+
             const isPos = valNum >= 0;
             const prefix = isPos ? '+' : '';
+            
             el.innerText = `${prefix}${valNum.toFixed(2)}%`;
             el.className = isPos 
-                ? "text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full"
-                : "text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full";
+                ? "text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full"
+                : "text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2.5 py-1 rounded-full";
+
+            if (arrowEl) {
+                arrowEl.innerText = isPos ? '↗' : '↘';
+                arrowEl.className = isPos 
+                    ? "w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold"
+                    : "w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold";
+            }
         }
 
         function createPill(val) {
@@ -618,14 +659,14 @@
 
         async function fetchLiveMarketData() {
             try {
-                // 1. Fetch Top Market Cards (Binance)
+                // 1. Fetch Top Cards (Binance API)
                 const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 if (btcRes.ok) {
                     const btcData = await btcRes.json();
                     const btcPrice = parseFloat(btcData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const btcChange = parseFloat(btcData.priceChangePercent);
                     document.getElementById('price-btc').innerText = `$${btcPrice}`;
-                    updateBadgeUI('change-btc', btcChange);
+                    updateBadgeUI('change-btc', 'arrow-btc', btcChange);
                 }
 
                 const goldRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT');
@@ -634,11 +675,11 @@
                     const goldPrice = parseFloat(goldData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const goldChange = parseFloat(goldData.priceChangePercent);
                     document.getElementById('price-xau').innerText = `$${goldPrice}`;
-                    updateBadgeUI('change-xau', goldChange);
+                    updateBadgeUI('change-xau', 'arrow-xau', goldChange);
                 }
 
-                // 2. Fetch Full Market Table (CoinGecko API with 1D, 7D, 30D, 1Y metrics)
-                const tableRes = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,pax-gold,ethereum,solana,tether,kinesis-silver&price_change_percentage=1d,7d,30d,1y');
+                // 2. Fetch Full Market Table (CoinGecko API with 7D, 30D, 1Y metrics)
+                const tableRes = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,pax-gold,ethereum,solana,tether,kinesis-silver&price_change_percentage=7d,30d,1y');
                 if (tableRes.ok) {
                     const coinData = await tableRes.json();
                     const tableBody = document.getElementById('market-table-body');
@@ -663,7 +704,6 @@
                                 </div>
                             </td>
                             <td class="py-4 px-2 font-extrabold text-white text-sm">${priceFormatted}</td>
-                            <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_1d_in_currency)}</td>
                             <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_7d_in_currency)}</td>
                             <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_30d_in_currency)}</td>
                             <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_1y_in_currency)}</td>
@@ -688,7 +728,7 @@
             document.getElementById('update-timer-text').innerText = timerText;
         }, 60000);
 
-        // Fetch Live Market Data on Load, then repeat every 5 minutes (300,000ms)
+        // Fetch Live Market Data on Load, then repeat every 5 minutes
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
