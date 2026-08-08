@@ -6,23 +6,31 @@
     <title>ZNZ | Terminal Dashboard</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
                     colors: {
                         znz: {
                             bg: '#050507',
-                            sidebar: '#0D0E12',
-                            card: '#12141C',
-                            border: '#1E2028',
+                            sidebar: '#0A0B0E',
+                            card: '#0D0F17',
+                            border: 'rgba(255, 255, 255, 0.08)',
                             purple: '#6366F1',
-                            green: '#22C55E',
+                            green: '#10B981',
                             red: '#EF4444',
                             text: '#F3F4F6',
-                            muted: '#9CA3AF'
+                            muted: '#8E95A5'
                         }
                     }
                 }
@@ -34,7 +42,8 @@
         body {
             background-color: #050507;
             color: #F3F4F6;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Custom Scrollbars */
@@ -54,12 +63,35 @@
 
         /* Active Sidebar Tab */
         .nav-btn.active {
-            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0.02) 100%);
             border-left: 3px solid #6366F1;
             color: #FFFFFF;
         }
 
-        /* Side Glow Cards */
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(18, 20, 29, 0.7) 0%, rgba(10, 11, 16, 0.8) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+        }
+
+        /* Silver/Gray Glowing Sparkline Lines */
+        .sparkline-svg path {
+            stroke: #d1d5db;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0px 0px 6px rgba(255, 255, 255, 0.4));
+        }
+
+        /* Side Glow Cards for News */
         .glow-card-purple {
             position: relative;
             overflow: hidden;
@@ -67,9 +99,7 @@
         .glow-card-purple::after {
             content: '';
             position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; bottom: 0; right: 0;
             width: 4px;
             background: linear-gradient(180deg, #6366F1 0%, #a855f7 100%);
             border-top-right-radius: 0.75rem;
@@ -84,14 +114,12 @@
         .glow-card-green::after {
             content: '';
             position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; bottom: 0; right: 0;
             width: 4px;
-            background: #22C55E;
+            background: #10B981;
             border-top-right-radius: 0.75rem;
             border-bottom-right-radius: 0.75rem;
-            box-shadow: -4px 0 22px 6px rgba(34, 197, 94, 0.95);
+            box-shadow: -4px 0 22px 6px rgba(16, 185, 129, 0.95);
         }
 
         .glow-card-red {
@@ -101,9 +129,7 @@
         .glow-card-red::after {
             content: '';
             position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
+            top: 0; bottom: 0; right: 0;
             width: 4px;
             background: #EF4444;
             border-top-right-radius: 0.75rem;
@@ -118,14 +144,12 @@
         .glow-bottom-green::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 4px;
-            background: #22C55E;
+            background: #10B981;
             border-bottom-left-radius: 0.75rem;
             border-bottom-right-radius: 0.75rem;
-            box-shadow: 0 -4px 22px 6px rgba(34, 197, 94, 0.95);
+            box-shadow: 0 -4px 22px 6px rgba(16, 185, 129, 0.95);
         }
 
         .glow-bottom-red {
@@ -135,9 +159,7 @@
         .glow-bottom-red::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             height: 4px;
             background: #EF4444;
             border-bottom-left-radius: 0.75rem;
@@ -146,7 +168,7 @@
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden flex bg-znz-bg">
+<body class="h-screen overflow-hidden flex bg-znz-bg text-sans">
 
     <!-- ========================================== -->
     <!-- 1. LEFT SIDEBAR                            -->
@@ -154,7 +176,7 @@
     <aside class="w-64 border-r border-znz-border bg-znz-sidebar flex flex-col justify-between p-5 flex-shrink-0 z-20">
         <div>
             <!-- ZNZ Brand Logo -->
-            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-znz-border/60">
+            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-znz-border">
                 <img src="logo.png" alt="ZNZ Logo" class="w-9 h-9 rounded-lg object-contain bg-black/40 p-1 border border-znz-border" onerror="this.style.display='none'">
                 <div>
                     <h1 class="font-extrabold text-white text-base leading-none tracking-tight">ZNZ</h1>
@@ -163,10 +185,10 @@
             </div>
 
             <!-- Discord User Profile Widget -->
-            <div class="bg-znz-card/80 border border-znz-border/80 rounded-xl p-3 mb-6 flex items-center gap-3 shadow-inner">
+            <div class="glass-card rounded-xl p-3 mb-6 flex items-center gap-3">
                 <div class="relative">
                     <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar" class="w-10 h-10 rounded-full object-cover border border-znz-border">
-                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-znz-green border-2 border-znz-sidebar rounded-full"></span>
+                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-znz-green border-2 border-znz-sidebar rounded-full"></span>
                 </div>
                 <div class="overflow-hidden">
                     <p class="text-[10px] uppercase font-bold text-znz-muted tracking-wider">Welcome Back</p>
@@ -178,25 +200,25 @@
             <div class="space-y-1">
                 <p class="text-[10px] font-semibold text-znz-muted uppercase tracking-wider px-3 mb-2">Overview</p>
                 
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-znz-muted hover:text-white transition">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-znz-muted hover:text-white transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard
                 </button>
 
-                <button onclick="switchTab('news')" id="nav-news" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-znz-muted hover:text-white transition">
+                <button onclick="switchTab('news')" id="nav-news" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-znz-muted hover:text-white transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
                     News Trade
                 </button>
 
-                <button onclick="switchTab('replay')" id="nav-replay" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-znz-muted hover:text-white transition">
+                <button onclick="switchTab('replay')" id="nav-replay" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold text-znz-muted hover:text-white transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
                     Replay Chart
                 </button>
             </div>
         </div>
 
-        <!-- Community Footer Link -->
-        <div class="pt-4 border-t border-znz-border/60">
+        <!-- Community Link -->
+        <div class="pt-4 border-t border-znz-border">
             <a href="https://discord.gg/v5MdabQXMY" target="_blank" class="flex items-center justify-between text-xs text-znz-muted hover:text-white transition px-2 py-1.5 rounded-md hover:bg-znz-card">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4 text-[#5865F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028z"/></svg>
@@ -212,22 +234,12 @@
     <!-- ========================================== -->
     <div class="flex-1 flex flex-col h-full overflow-hidden">
 
-        <!-- Top Header Navigation Bar -->
-        <header class="h-14 border-b border-znz-border px-8 flex items-center justify-between flex-shrink-0 bg-znz-sidebar/50 backdrop-blur-md">
-            <div class="flex items-center gap-2 text-xs font-medium">
+        <!-- Top Header Navigation Bar (Cleaned, Live Tag Removed) -->
+        <header class="h-14 border-b border-znz-border px-8 flex items-center justify-between flex-shrink-0 bg-znz-sidebar/40 backdrop-blur-md">
+            <div class="flex items-center gap-2 text-xs font-semibold">
                 <span class="text-znz-muted">Overview</span>
                 <span class="text-znz-muted">/</span>
                 <span id="breadcrumb-current" class="text-white font-bold">Dashboard</span>
-            </div>
-
-            <!-- Live Market Status Tag -->
-            <div class="flex items-center gap-2 bg-znz-card border border-znz-border px-3 py-1 rounded-full text-xs">
-                <img src="xauusd.png" alt="XAUUSD" class="w-4 h-4 rounded-full object-cover" onerror="this.style.display='none'">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-znz-green opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-znz-green"></span>
-                </span>
-                <span class="text-znz-muted text-[11px] font-medium">Live Tracked</span>
             </div>
         </header>
 
@@ -235,92 +247,181 @@
         <main class="flex-1 overflow-y-auto p-6 sm:p-8">
 
             <!-- TAB 1: DASHBOARD -->
-            <div id="view-dashboard" class="view-section space-y-6 max-w-5xl mx-auto">
+            <div id="view-dashboard" class="view-section space-y-6 max-w-6xl mx-auto">
                 <div>
-                    <h2 class="text-xl font-bold text-white tracking-tight">Live Crypto & Market Updates</h2>
-                    <p class="text-xs text-znz-muted mt-1">Real-time spot price and market trends</p>
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight">Live Market Updates</h2>
                 </div>
 
-                <!-- Main Hero Card: XAUUSD Sparkline -->
-                <div class="bg-znz-card border border-znz-border rounded-2xl p-5 overflow-hidden">
-                    <div class="tradingview-widget-container">
-                      <div class="tradingview-widget-container__widget"></div>
-                      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-                      {
-                        "symbol": "OANDA:XAUUSD",
-                        "width": "100%",
-                        "height": "220",
-                        "locale": "en",
-                        "dateRange": "1D",
-                        "colorTheme": "dark",
-                        "trendLineColor": "#6366F1",
-                        "underLineColor": "rgba(99, 102, 241, 0.15)",
-                        "isTransparent": true,
-                        "autosize": true
-                      }
-                      </script>
-                    </div>
-                </div>
-
-                <!-- Market Overview Table Section -->
-                <div class="bg-znz-card border border-znz-border rounded-2xl p-5">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-znz-muted mb-4">Macro Market Overview</h3>
+                <!-- 3 Fancy Glassmorphism Cards Grid (XAUUSD, BTC, DXY) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-4 bg-znz-bg border border-znz-border/80 rounded-xl flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-znz-muted uppercase font-bold">Dollar Index</p>
-                                <p class="text-lg font-extrabold text-white">DXY</p>
+                    <!-- 1. XAUUSD Card -->
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center font-bold text-amber-400 text-xs">
+                                        ⚡
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-znz-muted font-bold tracking-wider">XAU/USD</p>
+                                        <h3 class="text-sm font-extrabold text-white">Gold Spot</h3>
+                                    </div>
+                                </div>
+
+                                <!-- 3-Dots Dropdown Button -->
+                                <div class="relative">
+                                    <button onclick="toggleMenu('menu-xau')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                    </button>
+                                    <div id="menu-xau" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                        <button onclick="setTimeframe('XAU', '1D')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white">Timeframe: 1D</button>
+                                        <button onclick="setTimeframe('XAU', '1W')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                        <button onclick="setTimeframe('XAU', '1M')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                    </div>
+                                </div>
                             </div>
-                            <span class="text-xs text-znz-red font-semibold bg-znz-red/10 px-2 py-1 rounded">-0.34%</span>
+
+                            <div class="flex items-baseline gap-3 my-2">
+                                <span class="text-2xl font-extrabold text-white tracking-tight">$4,341.93</span>
+                                <span class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+2.39%</span>
+                            </div>
                         </div>
 
-                        <div class="p-4 bg-znz-bg border border-znz-border/80 rounded-xl flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-znz-muted uppercase font-bold">Silver Spot</p>
-                                <p class="text-lg font-extrabold text-white">XAGUSD</p>
-                            </div>
-                            <span class="text-xs text-znz-green font-semibold bg-znz-green/10 px-2 py-1 rounded">+1.12%</span>
-                        </div>
-
-                        <div class="p-4 bg-znz-bg border border-znz-border/80 rounded-xl flex justify-between items-center">
-                            <div>
-                                <p class="text-[10px] text-znz-muted uppercase font-bold">Crude Oil</p>
-                                <p class="text-lg font-extrabold text-white">USOIL</p>
-                            </div>
-                            <span class="text-xs text-znz-green font-semibold bg-znz-green/10 px-2 py-1 rounded">+0.85%</span>
+                        <!-- Shining Gray Sparkline Curve -->
+                        <div class="w-full h-28 relative mt-2">
+                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="silver-grad-1" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 0 65 Q 30 55, 60 40 T 120 30 T 160 15 T 200 8 L 200 80 L 0 80 Z" fill="url(#silver-grad-1)" stroke="none" />
+                                <path d="M 0 65 Q 30 55, 60 40 T 120 30 T 160 15 T 200 8" fill="none" />
+                            </svg>
                         </div>
                     </div>
+
+                    <!-- 2. BTC/USDT Card -->
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center font-bold text-orange-400 text-xs">
+                                        ₿
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-znz-muted font-bold tracking-wider">BTC/USDT</p>
+                                        <h3 class="text-sm font-extrabold text-white">Bitcoin</h3>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <button onclick="toggleMenu('menu-btc')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                    </button>
+                                    <div id="menu-btc" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                        <button onclick="setTimeframe('BTC', '1D')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white">Timeframe: 1D</button>
+                                        <button onclick="setTimeframe('BTC', '1W')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                        <button onclick="setTimeframe('BTC', '1M')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-baseline gap-3 my-2">
+                                <span class="text-2xl font-extrabold text-white tracking-tight">$109,687.60</span>
+                                <span class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+1.09%</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-28 relative mt-2">
+                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="silver-grad-2" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 0 50 Q 40 70, 80 30 T 140 45 T 200 12 L 200 80 L 0 80 Z" fill="url(#silver-grad-2)" stroke="none" />
+                                <path d="M 0 50 Q 40 70, 80 30 T 140 45 T 200 12" fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 3. DXY (Dollar Index) Card -->
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[280px]">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center font-bold text-indigo-400 text-xs">
+                                        $
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-znz-muted font-bold tracking-wider">DXY / USD</p>
+                                        <h3 class="text-sm font-extrabold text-white">US Dollar Index</h3>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <button onclick="toggleMenu('menu-dxy')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                    </button>
+                                    <div id="menu-dxy" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                        <button onclick="setTimeframe('DXY', '1D')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white">Timeframe: 1D</button>
+                                        <button onclick="setTimeframe('DXY', '1W')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                        <button onclick="setTimeframe('DXY', '1M')" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-baseline gap-3 my-2">
+                                <span class="text-2xl font-extrabold text-white tracking-tight">104.34</span>
+                                <span class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full">-0.34%</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full h-28 relative mt-2">
+                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="silver-grad-3" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.25" />
+                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 0 15 Q 50 35, 100 25 T 150 60 T 200 68 L 200 80 L 0 80 Z" fill="url(#silver-grad-3)" stroke="none" />
+                                <path d="M 0 15 Q 50 35, 100 25 T 150 60 T 200 68" fill="none" />
+                            </svg>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
             <!-- TAB 2: NEWS TRADE (Integrated directly with app.js) -->
-            <div id="view-news" class="view-section hidden space-y-6 max-w-5xl mx-auto">
-                
-                <!-- KPI Summary Section -->
+            <div id="view-news" class="view-section hidden space-y-6 max-w-6xl mx-auto">
                 <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
-                    <div class="glow-bottom-green bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
+                    <div class="glow-bottom-green glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
                         <p id="stat-winrate" class="text-2xl sm:text-3xl font-extrabold text-white">0%</p>
                     </div>
 
-                    <div class="glow-bottom-red bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">STREAK</p>
+                    <div class="glow-bottom-red glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">STREAK</p>
                         <p id="stat-streak" class="text-2xl sm:text-3xl font-extrabold text-white">0 Streak</p>
                     </div>
 
-                    <div class="bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
+                    <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
                         <p id="stat-wins" class="text-2xl sm:text-3xl font-extrabold text-znz-green">0</p>
                     </div>
 
-                    <div class="bg-znz-card border border-znz-border rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
-                        <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
+                    <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
                         <p id="stat-losses" class="text-2xl sm:text-3xl font-extrabold text-znz-red">0</p>
                     </div>
                 </section>
 
-                <!-- Upcoming News Section -->
                 <section class="mb-8">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-4 bg-znz-purple rounded-full"></div>
@@ -331,7 +432,6 @@
                     </div>
                 </section>
 
-                <!-- Past News Section -->
                 <section>
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-1 h-4 bg-znz-muted rounded-full"></div>
@@ -344,13 +444,13 @@
             </div>
 
             <!-- TAB 3: REPLAY CHART -->
-            <div id="view-replay" class="view-section hidden h-full flex flex-col max-w-5xl mx-auto">
+            <div id="view-replay" class="view-section hidden h-full flex flex-col max-w-6xl mx-auto">
                 <div class="mb-4">
                     <h2 class="text-xl font-bold text-white tracking-tight">XAUUSD Interactive Replay Chart</h2>
                     <p class="text-xs text-znz-muted mt-1">TradingView charting engine with historical timeframe controls</p>
                 </div>
 
-                <div class="flex-1 w-full bg-znz-card border border-znz-border rounded-2xl overflow-hidden min-h-[550px]">
+                <div class="flex-1 w-full glass-card rounded-2xl overflow-hidden min-h-[550px]">
                     <div class="tradingview-widget-container" style="height:100%;width:100%">
                         <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -394,7 +494,19 @@
             document.getElementById('breadcrumb-current').innerText = breadcrumbMap[viewName];
         }
 
-        // URL Parameters for Discord User Info
+        function toggleMenu(menuId) {
+            const menu = document.getElementById(menuId);
+            document.querySelectorAll('[id^="menu-"]').forEach(el => {
+                if(el.id !== menuId) el.classList.add('hidden');
+            });
+            menu.classList.toggle('hidden');
+        }
+
+        function setTimeframe(symbol, timeframe) {
+            console.log(`Setting ${symbol} timeframe to ${timeframe}`);
+            document.querySelectorAll('[id^="menu-"]').forEach(el => el.classList.add('hidden'));
+        }
+
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
             const username = urlParams.get('user') || 'Arya';
