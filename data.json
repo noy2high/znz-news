@@ -34,35 +34,9 @@
     "previous": "3.75%",
     "trend": "DOWN",
     "strategy": "SELL",
-    "pips": "-400",
+    "pips": "400",
     "result": "LOSS",
     "notes": "Federal Funds Rate & FOMC Statement"
-  },
-  {
-    "date": "Kamis, 30 Jul 2026 — 01:30 WIB",
-    "isoDate": "2026-07-30T01:30:00+07:00",
-    "event": "FOMC Press Conference",
-    "actual": "",
-    "forecast": "-",
-    "previous": "-",
-    "trend": "-",
-    "strategy": "-",
-    "pips": "",
-    "result": "PENDING",
-    "notes": "Konferensi Pers Powell"
-  },
-  {
-    "date": "Kamis, 30 Jul 2026 — 19:30 WIB",
-    "isoDate": "2026-07-30T19:30:00+07:00",
-    "event": "US Advance GDP & Core PCE",
-    "actual": "",
-    "forecast": "2.1%",
-    "previous": "0.3%",
-    "trend": "-",
-    "strategy": "-",
-    "pips": "",
-    "result": "PENDING",
-    "notes": "Advance GDP q/q & Core PCE Price Index m/m"
   },
   {
     "date": "Rabu, 15 Jul 2026 — 19:30 WIB",
