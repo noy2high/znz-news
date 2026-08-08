@@ -82,6 +82,17 @@
             box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
         }
 
+        /* Vertical Price Glow Lines */
+        .price-glow-amber {
+            box-shadow: -2px 0 12px 1px rgba(245, 158, 11, 0.85);
+        }
+        .price-glow-orange {
+            box-shadow: -2px 0 12px 1px rgba(249, 115, 22, 0.85);
+        }
+        .price-glow-teal {
+            box-shadow: -2px 0 12px 1px rgba(20, 184, 166, 0.85);
+        }
+
         /* Thinner, Crisp Silver/White Chart Sparkline Lines */
         .sparkline-svg path.line-path {
             stroke: #e5e7eb;
@@ -189,15 +200,26 @@
                 </div>
             </div>
 
-            <!-- Discord User Profile Widget -->
-            <div class="glass-card rounded-xl p-3 mb-6 flex items-center gap-3">
-                <div class="relative">
-                    <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar" class="w-10 h-10 rounded-full object-cover border border-znz-border">
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-znz-green border-2 border-znz-sidebar rounded-full"></span>
+            <!-- Interactive Discord Profile Container -->
+            <div class="relative mb-6">
+                <div onclick="toggleProfileMenu()" class="glass-card rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-white/20 transition">
+                    <div class="relative">
+                        <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar" class="w-10 h-10 rounded-full object-cover border border-znz-border">
+                        <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-znz-green border-2 border-znz-sidebar rounded-full"></span>
+                    </div>
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-[10px] uppercase font-bold text-znz-muted tracking-wider">Welcome Back</p>
+                        <p id="user-name" class="text-xs font-bold text-white truncate">Member</p>
+                    </div>
+                    <svg id="profile-chevron" class="w-4 h-4 text-znz-muted transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
-                <div class="overflow-hidden">
-                    <p class="text-[10px] uppercase font-bold text-znz-muted tracking-wider">Welcome Back</p>
-                    <p id="user-name" class="text-xs font-bold text-white truncate">Member</p>
+
+                <!-- Slide-Down Log Out Container -->
+                <div id="logout-container" class="hidden mt-2 glass-card rounded-xl p-2 border border-red-500/20 shadow-xl transition-all duration-200">
+                    <button onclick="handleLogout()" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-znz-red hover:bg-red-500/10 rounded-lg transition">
+                        <svg class="w-4 h-4 text-znz-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Log Out
+                    </button>
                 </div>
             </div>
 
@@ -274,11 +296,10 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <!-- Compact Outer White Glass Container -->
-                                    <div class="w-[48px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-1">
-                                        <!-- Circular Yellow Gold Icon -->
-                                        <div class="w-full h-full rounded-full border border-amber-400/40 bg-amber-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/40/f59e0b/ffffff?text=XAU'">
+                                    <!-- Compact Outer Glass Container (Smaller inner icon padding) -->
+                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                        <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
+                                            <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
                                         </div>
                                     </div>
                                     <div>
@@ -301,7 +322,11 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
+                                <!-- Price with Yellow Glowing Accent Bar -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-[3px] h-8 bg-amber-400 rounded-full border-r border-amber-400 price-glow-amber"></div>
+                                    <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -333,11 +358,9 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <!-- Compact Outer White Glass Container -->
-                                    <div class="w-[48px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-1">
-                                        <!-- Circular Orange Bitcoin Icon -->
-                                        <div class="w-full h-full rounded-full border border-orange-500/40 bg-orange-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/40/f97316/ffffff?text=BTC'">
+                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                        <div class="w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center overflow-hidden">
+                                            <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f97316/ffffff?text=BTC'">
                                         </div>
                                     </div>
                                     <div>
@@ -360,7 +383,11 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
+                                <!-- Price with Orange Glowing Accent Bar -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-[3px] h-8 bg-orange-500 rounded-full border-r border-orange-500 price-glow-orange"></div>
+                                    <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -392,11 +419,9 @@
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <!-- Compact Outer White Glass Container -->
-                                    <div class="w-[48px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-1">
-                                        <!-- Circular Tosca/Teal DXY Icon -->
-                                        <div class="w-full h-full rounded-full border border-teal-400/40 bg-teal-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/40/14b8a6/ffffff?text=DXY'">
+                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                        <div class="w-6 h-6 rounded-full border border-teal-400/50 bg-teal-500/10 flex items-center justify-center overflow-hidden">
+                                            <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/14b8a6/ffffff?text=DXY'">
                                         </div>
                                     </div>
                                     <div>
@@ -419,7 +444,11 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                <!-- Price with Tosca Glowing Accent Bar -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-[3px] h-8 bg-teal-400 rounded-full border-r border-teal-400 price-glow-teal"></div>
+                                    <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -580,7 +609,20 @@
             document.getElementById('breadcrumb-current').innerText = breadcrumbMap[viewName];
         }
 
-        // Dropdown Toggle
+        // Toggle Profile Dropdown Menu
+        function toggleProfileMenu() {
+            const logoutContainer = document.getElementById('logout-container');
+            const chevron = document.getElementById('profile-chevron');
+            logoutContainer.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
+        function handleLogout() {
+            console.log("User logged out");
+            window.location.reload();
+        }
+
+        // Dropdown Toggle for Cards
         function toggleMenu(menuId) {
             const menu = document.getElementById(menuId);
             document.querySelectorAll('[id^="menu-"]').forEach(el => {
