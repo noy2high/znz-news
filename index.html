@@ -46,6 +46,12 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Prevent scrolling while in maintenance mode */
+        body.maintenance-mode {
+            overflow: hidden !important;
+            height: 100vh !important;
+        }
+
         /* Custom Scrollbars */
         ::-webkit-scrollbar {
             width: 6px;
@@ -82,7 +88,7 @@
             box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
         }
 
-        /* Price Inline Glow Bar Styling (Exact text height) */
+        /* Price Inline Glow Bar Styling */
         .price-glow-bar {
             width: 4px;
             height: 28px;
@@ -207,7 +213,41 @@
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden flex bg-znz-bg text-sans">
+<body class="h-screen overflow-hidden flex bg-znz-bg text-sans maintenance-mode">
+
+    <!-- ========================================== -->
+    <!-- UNBYPASSABLE MAINTENANCE OVERLAY          -->
+    <!-- ========================================== -->
+    <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] backdrop-blur-3xl flex flex-col items-center justify-between p-8 text-center select-none pointer-events-auto">
+        
+        <!-- Top Spacer -->
+        <div></div>
+
+        <!-- Center Content: Spinner & Notice -->
+        <div class="flex flex-col items-center justify-center space-y-6 max-w-sm">
+            
+            <!-- Glowing Loader Spinner -->
+            <div class="relative w-14 h-14 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-2 border-indigo-500/20"></div>
+                <div class="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
+                <div class="w-2.5 h-2.5 bg-indigo-500 rounded-full animate-ping"></div>
+            </div>
+
+            <!-- Maintenance Text -->
+            <div class="space-y-1">
+                <h1 class="text-lg font-bold text-white tracking-wide">Sorry! Under Maintenance.</h1>
+            </div>
+
+        </div>
+
+        <!-- Bottom Discord Announcement -->
+        <div class="pt-8 border-t border-white/5 w-full max-w-xs">
+            <p class="text-[11px] font-medium text-znz-muted">
+                Updates will be announced in the <a href="https://discord.gg/v5MdabQXMY" target="_blank" class="text-znz-purple hover:underline font-bold">Discord</a> shortly.
+            </p>
+        </div>
+
+    </div>
 
     <!-- ========================================== -->
     <!-- 1. LEFT SIDEBAR                            -->
@@ -346,7 +386,6 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Amber Glowing Bar (Matches text height) -->
                                 <div class="flex items-center gap-2.5">
                                     <div class="price-glow-bar glow-bar-amber"></div>
                                     <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
@@ -407,7 +446,6 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Orange Glowing Bar (Matches text height) -->
                                 <div class="flex items-center gap-2.5">
                                     <div class="price-glow-bar glow-bar-orange"></div>
                                     <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
@@ -468,7 +506,6 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Teal Glowing Bar (Matches text height) -->
                                 <div class="flex items-center gap-2.5">
                                     <div class="price-glow-bar glow-bar-teal"></div>
                                     <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
@@ -641,12 +678,10 @@
             chevron.classList.toggle('rotate-180');
         }
 
-        // Complete Logout Handler (Wipes all session storage to prevent auto-login loop)
+        // Complete Logout Handler
         function handleLogout() {
             localStorage.clear();
             sessionStorage.clear();
-            
-            // Redirect to the login folder
             window.location.href = '/login/';
         }
 
@@ -809,15 +844,13 @@
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
-        // Robust Authenticated Discord User Profile Loader
+        // Authenticated Discord User Profile Loader
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
             
-            // Search all common storage keys used by auth.js or OAuth
             let username = urlParams.get('user');
             let avatarUrl = urlParams.get('avatar');
 
-            // Attempt to parse JSON objects stored by auth.js
             try {
                 const discordUser = JSON.parse(localStorage.getItem('discord_user') || localStorage.getItem('user') || '{}');
                 if (discordUser.username) username = discordUser.global_name || discordUser.username;
@@ -828,7 +861,6 @@
                 console.warn("Could not parse JSON profile:", e);
             }
 
-            // Direct string fallbacks
             if (!username) {
                 username = localStorage.getItem('znz_user') || localStorage.getItem('discord_username') || localStorage.getItem('username') || 'Arya';
             }
