@@ -53,38 +53,25 @@
             touch-action: none !important;
         }
 
-        /* Sleek Off-Screen Left to Off-Screen Right Laser Scanner */
-        @keyframes laserSweep {
-            0% {
-                left: -20%;
+        /* Maintenance Background: Deep Purple to Black Gradient */
+        .maintenance-bg {
+            background: linear-gradient(180deg, rgba(30, 16, 60, 0.75) 0%, rgba(13, 10, 25, 0.95) 45%, #050507 100%);
+        }
+
+        /* Pulsing Orange Glow Effect on ZNZ Logo */
+        @keyframes orangePulse {
+            0%, 100% {
+                box-shadow: 0 0 15px 2px rgba(249, 115, 22, 0.35), 0 0 30px 6px rgba(245, 158, 11, 0.2);
+                border-color: rgba(249, 115, 22, 0.4);
             }
-            100% {
-                left: 120%;
+            50% {
+                box-shadow: 0 0 30px 8px rgba(249, 115, 22, 0.8), 0 0 50px 14px rgba(245, 158, 11, 0.45);
+                border-color: rgba(249, 115, 22, 0.85);
             }
         }
 
-        .laser-beam {
-            position: absolute;
-            top: 0;
-            height: 2px;
-            width: 15%; /* Sleek, non-bulky laser length */
-            pointer-events: none;
-            z-index: 100000;
-        }
-
-        /* 1. White Laser Beam (First) */
-        .laser-white {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
-            box-shadow: 0 1px 12px 2px rgba(255, 255, 255, 0.9), 0 0 20px 4px rgba(255, 255, 255, 0.5);
-            animation: laserSweep 4s linear infinite;
-        }
-
-        /* 2. Amber/Orange Laser Beam (Follows White) */
-        .laser-orange {
-            background: linear-gradient(90deg, rgba(245, 158, 11, 0) 0%, rgba(245, 158, 11, 1) 50%, rgba(245, 158, 11, 0) 100%);
-            box-shadow: 0 1px 12px 2px rgba(245, 158, 11, 0.9), 0 0 20px 4px rgba(245, 158, 11, 0.5);
-            animation: laserSweep 4s linear infinite;
-            animation-delay: 2s; /* Balanced half-cycle gap */
+        .glow-pulse-orange {
+            animation: orangePulse 2.8s infinite ease-in-out;
         }
 
         /* Custom Scrollbars */
@@ -253,26 +240,22 @@
     <!-- ========================================== -->
     <!-- UNBYPASSABLE MAINTENANCE OVERLAY          -->
     <!-- ========================================== -->
-    <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] flex flex-col items-center justify-between p-6 sm:p-8 text-center select-none pointer-events-auto overflow-hidden">
+    <div id="maintenance-overlay" class="fixed inset-0 z-[99999] maintenance-bg flex flex-col items-center justify-between p-6 sm:p-8 text-center select-none pointer-events-auto overflow-hidden">
         
-        <!-- Alternating White & Orange Top Scanner Laser Beams -->
-        <div class="laser-beam laser-white"></div>
-        <div class="laser-beam laser-orange"></div>
-
         <!-- Top Spacer -->
         <div></div>
 
-        <!-- Center Content: Spinner + Inner Logo + Text Stack -->
+        <!-- Center Content: Spinner + Pulsing Orange Logo + Text Stack -->
         <div class="flex flex-col items-center justify-center space-y-6 max-w-sm px-4">
             
-            <!-- Spinner Container with ZNZ Logo inside -->
+            <!-- Spinner Container with Pulsing Orange Glow ZNZ Logo -->
             <div class="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
                 <!-- Outer Ring Spinner -->
                 <div class="absolute inset-0 rounded-full border-2 border-white/10"></div>
-                <div class="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin"></div>
+                <div class="absolute inset-0 rounded-full border-2 border-white/80 border-t-transparent animate-spin"></div>
                 
-                <!-- Inner ZNZ Logo (logo.png) -->
-                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/60 border border-white/10 flex items-center justify-center overflow-hidden p-1 shadow-inner">
+                <!-- Inner Pulsing Orange ZNZ Logo -->
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-black/80 border border-orange-500/50 flex items-center justify-center overflow-hidden p-1.5 glow-pulse-orange">
                     <img src="logo.png" alt="ZNZ" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/32/ffffff/000000?text=ZNZ'">
                 </div>
             </div>
