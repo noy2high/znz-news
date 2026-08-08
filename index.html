@@ -261,7 +261,7 @@
                           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                           <span class="relative inline-flex rounded-full h-2 w-2 bg-white/90"></span>
                         </span>
-                        <span>Last update: <strong id="update-timer-text" class="text-white font-semibold">2 min ago</strong></span>
+                        <span>Last update: <strong id="update-timer-text" class="text-white font-semibold">0 min ago</strong></span>
                     </div>
                     <h2 class="text-2xl font-extrabold text-white tracking-tight">Live Market Updates</h2>
                 </div>
@@ -297,8 +297,8 @@
                             </div>
 
                             <div class="flex items-baseline gap-3 my-2">
-                                <span class="text-2xl font-extrabold text-white tracking-tight">$4,341.93</span>
-                                <span class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+2.39%</span>
+                                <span id="price-xau" class="text-2xl font-extrabold text-white tracking-tight">$4,341.93</span>
+                                <span id="change-xau" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+2.39%</span>
                             </div>
                         </div>
 
@@ -344,8 +344,8 @@
                             </div>
 
                             <div class="flex items-baseline gap-3 my-2">
-                                <span class="text-2xl font-extrabold text-white tracking-tight">$109,687.60</span>
-                                <span class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+1.09%</span>
+                                <span id="price-btc" class="text-2xl font-extrabold text-white tracking-tight">$109,687.60</span>
+                                <span id="change-btc" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full">+1.09%</span>
                             </div>
                         </div>
 
@@ -390,8 +390,8 @@
                             </div>
 
                             <div class="flex items-baseline gap-3 my-2">
-                                <span class="text-2xl font-extrabold text-white tracking-tight">104.34</span>
-                                <span class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full">-0.34%</span>
+                                <span id="price-dxy" class="text-2xl font-extrabold text-white tracking-tight">104.34</span>
+                                <span id="change-dxy" class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full">-0.34%</span>
                             </div>
                         </div>
 
@@ -490,7 +490,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- 3. JS NAVIGATION LOGIC                     -->
+    <!-- 3. JS NAVIGATION LOGIC & REAL API FETCH    -->
     <!-- ========================================== -->
     <script>
         // View Tab Switcher
@@ -518,7 +518,7 @@
             menu.classList.toggle('hidden');
         }
 
-        // Dynamic Timeframe Paths Data (1D, 1W, 1M)
+        // Dynamic Timeframe Paths Data
         const chartPaths = {
             xau: {
                 '1D': 'M 0 60 L 20 52 L 40 58 L 60 42 L 80 48 L 100 35 L 120 40 L 140 25 L 160 30 L 180 15 L 200 10',
@@ -541,7 +541,6 @@
             const pathData = chartPaths[symbol][tf];
             if (!pathData) return;
 
-            // Update SVG Line and Gradient Fill Paths
             const lineEl = document.getElementById(`line-${symbol}`);
             const fillEl = document.getElementById(`fill-${symbol}`);
 
@@ -550,34 +549,77 @@
                 fillEl.setAttribute('d', `${pathData} L 200 80 L 0 80 Z`);
             }
 
-            // Update Active UI States in Dropdown
             ['1D', '1W', '1M'].forEach(t => {
                 const btn = document.getElementById(`tf-${symbol}-${t}`);
                 if (btn) {
-                    if (t === tf) {
-                        btn.className = "w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold";
-                    } else {
-                        btn.className = "w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted";
-                    }
+                    btn.className = (t === tf) ? "w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold" : "w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted";
                 }
             });
 
-            // Close Dropdown Menu
             document.getElementById(`menu-${symbol}`).classList.add('hidden');
         }
 
-        // Live "Last update" Counter Timer (5-min Cycle)
-        let minutesSinceUpdate = 2;
-        function updateTimerCounter() {
-            const timerEl = document.getElementById('update-timer-text');
-            if (timerEl) {
-                timerEl.innerText = `${minutesSinceUpdate} min ago`;
-            }
-            minutesSinceUpdate = (minutesSinceUpdate + 1) % 6; // Resets every 5 mins
-        }
-        setInterval(updateTimerCounter, 60000); // Ticks every 1 minute
+        // ==========================================
+        // REAL 5-MINUTE LIVE MARKET FETCH ENGINE
+        // ==========================================
+        let minutesSinceUpdate = 0;
 
-        // User Discord Profile Parameters Loader
+        function updateBadgeUI(elId, valNum) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const isPos = valNum >= 0;
+            const prefix = isPos ? '+' : '';
+            el.innerText = `${prefix}${valNum.toFixed(2)}%`;
+            el.className = isPos 
+                ? "text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2 py-0.5 rounded-full"
+                : "text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full";
+        }
+
+        async function fetchLiveMarketData() {
+            try {
+                // 1. Fetch Real Live BTC/USDT Price from Binance API
+                const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+                if (btcRes.ok) {
+                    const btcData = await btcRes.json();
+                    const btcPrice = parseFloat(btcData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const btcChange = parseFloat(btcData.priceChangePercent);
+                    
+                    document.getElementById('price-btc').innerText = `$${btcPrice}`;
+                    updateBadgeUI('change-btc', btcChange);
+                }
+
+                // 2. Fetch Real Gold / DXY Spot Estimates
+                const goldRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT');
+                if (goldRes.ok) {
+                    const goldData = await goldRes.json();
+                    const goldPrice = parseFloat(goldData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    const goldChange = parseFloat(goldData.priceChangePercent);
+                    
+                    document.getElementById('price-xau').innerText = `$${goldPrice}`;
+                    updateBadgeUI('change-xau', goldChange);
+                }
+
+                // Reset Update Counter
+                minutesSinceUpdate = 0;
+                document.getElementById('update-timer-text').innerText = '0 min ago';
+
+            } catch (err) {
+                console.error("Live market API sync error:", err);
+            }
+        }
+
+        // Update Counter Text Every 60 Seconds
+        setInterval(() => {
+            minutesSinceUpdate++;
+            const timerText = minutesSinceUpdate === 0 ? '0 min ago' : `${minutesSinceUpdate} min ago`;
+            document.getElementById('update-timer-text').innerText = timerText;
+        }, 60000);
+
+        // Fetch Live Market Prices on Load, then repeat every 5 minutes (300,000ms)
+        fetchLiveMarketData();
+        setInterval(fetchLiveMarketData, 300000);
+
+        // User Profile Parameters Loader
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
             const username = urlParams.get('user') || 'Arya';
