@@ -82,15 +82,41 @@
             box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
         }
 
-        /* Vertical Price Glow Lines */
-        .price-glow-amber {
-            box-shadow: -2px 0 12px 1px rgba(245, 158, 11, 0.85);
+        /* Thicker Vertical Card Edge Glow Bar Styling */
+        .card-edge-glow {
+            position: absolute;
+            left: 0;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
-        .price-glow-orange {
-            box-shadow: -2px 0 12px 1px rgba(249, 115, 22, 0.85);
+        .edge-glow-amber {
+            background-color: #f59e0b;
+            box-shadow: 3px 0 16px 2px rgba(245, 158, 11, 0.9);
         }
-        .price-glow-teal {
-            box-shadow: -2px 0 12px 1px rgba(20, 184, 166, 0.85);
+        .edge-glow-orange {
+            background-color: #f97316;
+            box-shadow: 3px 0 16px 2px rgba(249, 115, 22, 0.9);
+        }
+        .edge-glow-teal {
+            background-color: #14b8a6;
+            box-shadow: 3px 0 16px 2px rgba(20, 184, 166, 0.9);
+        }
+
+        /* Smooth Slide-Down Animation for Log Out Menu */
+        .slide-dropdown {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide-dropdown.open {
+            max-height: 80px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Thinner, Crisp Silver/White Chart Sparkline Lines */
@@ -202,7 +228,7 @@
 
             <!-- Interactive Discord Profile Container -->
             <div class="relative mb-6">
-                <div onclick="toggleProfileMenu()" class="glass-card rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-white/20 transition">
+                <div onclick="toggleProfileMenu()" class="glass-card rounded-xl p-3 flex items-center gap-3 cursor-pointer hover:border-white/20 transition select-none">
                     <div class="relative">
                         <img id="user-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Discord Avatar" class="w-10 h-10 rounded-full object-cover border border-znz-border">
                         <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-znz-green border-2 border-znz-sidebar rounded-full"></span>
@@ -211,15 +237,17 @@
                         <p class="text-[10px] uppercase font-bold text-znz-muted tracking-wider">Welcome Back</p>
                         <p id="user-name" class="text-xs font-bold text-white truncate">Member</p>
                     </div>
-                    <svg id="profile-chevron" class="w-4 h-4 text-znz-muted transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg id="profile-chevron" class="w-4 h-4 text-znz-muted transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
 
-                <!-- Slide-Down Log Out Container -->
-                <div id="logout-container" class="hidden mt-2 glass-card rounded-xl p-2 border border-red-500/20 shadow-xl transition-all duration-200">
-                    <button onclick="handleLogout()" class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-znz-red hover:bg-red-500/10 rounded-lg transition">
-                        <svg class="w-4 h-4 text-znz-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Log Out
-                    </button>
+                <!-- Slide-Down Log Out Container with Smooth CSS Transition -->
+                <div id="logout-container" class="slide-dropdown mt-2">
+                    <div class="glass-card rounded-xl p-1.5 border border-red-500/20 shadow-xl">
+                        <button onclick="handleLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-znz-red hover:bg-red-500/10 rounded-lg transition">
+                            <svg class="w-4 h-4 text-znz-red" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            Log Out
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -292,11 +320,13 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                     
                     <!-- 1. XAUUSD Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                        <!-- Thicker Left Edge Glow Line (Amber) -->
+                        <div class="card-edge-glow edge-glow-amber"></div>
+
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
-                                    <!-- Compact Outer Glass Container (Smaller inner icon padding) -->
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
@@ -322,11 +352,7 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Yellow Glowing Accent Bar -->
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-[3px] h-8 bg-amber-400 rounded-full border-r border-amber-400 price-glow-amber"></div>
-                                    <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
-                                </div>
+                                <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -354,7 +380,10 @@
                     </div>
 
                     <!-- 2. BTC/USDT Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                        <!-- Thicker Left Edge Glow Line (Orange) -->
+                        <div class="card-edge-glow edge-glow-orange"></div>
+
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
@@ -383,11 +412,7 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Orange Glowing Accent Bar -->
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-[3px] h-8 bg-orange-500 rounded-full border-r border-orange-500 price-glow-orange"></div>
-                                    <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
-                                </div>
+                                <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -415,7 +440,10 @@
                     </div>
 
                     <!-- 3. DXY Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px]">
+                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                        <!-- Thicker Left Edge Glow Line (Teal) -->
+                        <div class="card-edge-glow edge-glow-teal"></div>
+
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
@@ -444,11 +472,7 @@
 
                             <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <!-- Price with Tosca Glowing Accent Bar -->
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-[3px] h-8 bg-teal-400 rounded-full border-r border-teal-400 price-glow-teal"></div>
-                                    <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
-                                </div>
+                                <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
                             </div>
 
                             <div class="flex items-center gap-2 mt-3">
@@ -609,20 +633,25 @@
             document.getElementById('breadcrumb-current').innerText = breadcrumbMap[viewName];
         }
 
-        // Toggle Profile Dropdown Menu
+        // Toggle Profile Dropdown Menu with Smooth Slide Animation
         function toggleProfileMenu() {
             const logoutContainer = document.getElementById('logout-container');
             const chevron = document.getElementById('profile-chevron');
-            logoutContainer.classList.toggle('hidden');
+            logoutContainer.classList.toggle('open');
             chevron.classList.toggle('rotate-180');
         }
 
+        // Redirect to Login Portal on Logout
         function handleLogout() {
-            console.log("User logged out");
-            window.location.reload();
+            localStorage.removeItem('znz_user');
+            localStorage.removeItem('znz_avatar');
+            localStorage.removeItem('znz_logged_in');
+            
+            // Redirect to login page or root auth portal
+            window.location.href = '/login.html';
         }
 
-        // Dropdown Toggle for Cards
+        // Dropdown Toggle for Market Cards
         function toggleMenu(menuId) {
             const menu = document.getElementById(menuId);
             document.querySelectorAll('[id^="menu-"]').forEach(el => {
@@ -781,11 +810,14 @@
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
-        // User Profile Parameters Loader
+        // Authenticated User Profile Loader (Checks localStorage session or URL params)
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
-            const username = urlParams.get('user') || 'Arya';
-            const avatar = urlParams.get('avatar');
+            const savedUser = localStorage.getItem('znz_user');
+            const savedAvatar = localStorage.getItem('znz_avatar');
+
+            const username = urlParams.get('user') || savedUser || 'Arya';
+            const avatar = urlParams.get('avatar') || savedAvatar;
 
             document.getElementById('user-name').innerText = username;
             if (avatar) {
