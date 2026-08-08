@@ -283,7 +283,6 @@
                                     </div>
                                 </div>
 
-                                <!-- 3-Dots Dropdown Button -->
                                 <div class="relative">
                                     <button onclick="toggleMenu('menu-xau')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
@@ -302,7 +301,6 @@
                             </div>
                         </div>
 
-                        <!-- Sparkline Curve SVG -->
                         <div class="w-full h-28 relative mt-2">
                             <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
                                 <defs>
@@ -410,6 +408,41 @@
                     </div>
 
                 </div>
+
+                <!-- NEW: MARKET OVERVIEW TABLE -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-znz-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span class="text-xs text-znz-muted font-bold">Live Updates</span>
+                        </div>
+                        <span class="text-xs font-bold text-white bg-white/10 px-3 py-1 rounded-lg border border-white/10">All Markets</span>
+                    </div>
+
+                    <h3 class="text-xl font-extrabold text-white mb-6">Market Overview</h3>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-[11px] font-bold text-znz-muted uppercase border-b border-znz-border/60 pb-3">
+                                    <th class="py-3 px-2 w-12">No</th>
+                                    <th class="py-3 px-2">Coin name</th>
+                                    <th class="py-3 px-2">Price</th>
+                                    <th class="py-3 px-2 text-right">Daily %</th>
+                                    <th class="py-3 px-2 text-right">Weekly %</th>
+                                    <th class="py-3 px-2 text-right">Monthly %</th>
+                                    <th class="py-3 px-2 text-right">Yearly %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="market-table-body" class="divide-y divide-znz-border/40 text-xs font-medium">
+                                <tr>
+                                    <td colspan="7" class="py-8 text-center text-znz-muted">Fetching live market performance table...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
             </div>
 
             <!-- TAB 2: NEWS TRADE -->
@@ -575,28 +608,68 @@
                 : "text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2 py-0.5 rounded-full";
         }
 
+        function createPill(val) {
+            if (val === undefined || val === null) return `<span class="text-znz-muted">-</span>`;
+            const isPos = val >= 0;
+            const prefix = isPos ? '+' : '';
+            const colorClass = isPos ? 'text-znz-green bg-znz-green/10 border-znz-green/20' : 'text-znz-red bg-znz-red/10 border-znz-red/20';
+            return `<span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${colorClass}">${prefix}${val.toFixed(2)}%</span>`;
+        }
+
         async function fetchLiveMarketData() {
             try {
-                // 1. Fetch Real Live BTC/USDT Price from Binance API
+                // 1. Fetch Top Market Cards (Binance)
                 const btcRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
                 if (btcRes.ok) {
                     const btcData = await btcRes.json();
                     const btcPrice = parseFloat(btcData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const btcChange = parseFloat(btcData.priceChangePercent);
-                    
                     document.getElementById('price-btc').innerText = `$${btcPrice}`;
                     updateBadgeUI('change-btc', btcChange);
                 }
 
-                // 2. Fetch Real Gold / DXY Spot Estimates
                 const goldRes = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT');
                 if (goldRes.ok) {
                     const goldData = await goldRes.json();
                     const goldPrice = parseFloat(goldData.lastPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     const goldChange = parseFloat(goldData.priceChangePercent);
-                    
                     document.getElementById('price-xau').innerText = `$${goldPrice}`;
                     updateBadgeUI('change-xau', goldChange);
+                }
+
+                // 2. Fetch Full Market Table (CoinGecko API with 1D, 7D, 30D, 1Y metrics)
+                const tableRes = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,pax-gold,ethereum,solana,tether,kinesis-silver&price_change_percentage=1d,7d,30d,1y');
+                if (tableRes.ok) {
+                    const coinData = await tableRes.json();
+                    const tableBody = document.getElementById('market-table-body');
+                    tableBody.innerHTML = '';
+
+                    coinData.forEach((coin, idx) => {
+                        const priceFormatted = coin.current_price > 1000 
+                            ? `$${coin.current_price.toLocaleString('en-US', { minimumFractionDigits: 2 })}` 
+                            : `$${coin.current_price.toFixed(2)}`;
+
+                        const row = document.createElement('tr');
+                        row.className = "hover:bg-white/5 transition";
+                        row.innerHTML = `
+                            <td class="py-4 px-2 font-bold text-znz-muted">#${idx + 1}</td>
+                            <td class="py-4 px-2">
+                                <div class="flex items-center gap-3">
+                                    <img src="${coin.image}" alt="${coin.name}" class="w-6 h-6 rounded-full object-cover">
+                                    <div>
+                                        <span class="font-extrabold text-white text-sm">${coin.name}</span>
+                                        <span class="text-znz-muted font-bold text-[10px] uppercase ml-1.5">${coin.symbol}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-2 font-extrabold text-white text-sm">${priceFormatted}</td>
+                            <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_1d_in_currency)}</td>
+                            <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_7d_in_currency)}</td>
+                            <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_30d_in_currency)}</td>
+                            <td class="py-4 px-2 text-right">${createPill(coin.price_change_percentage_1y_in_currency)}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
                 }
 
                 // Reset Update Counter
@@ -615,7 +688,7 @@
             document.getElementById('update-timer-text').innerText = timerText;
         }, 60000);
 
-        // Fetch Live Market Prices on Load, then repeat every 5 minutes (300,000ms)
+        // Fetch Live Market Data on Load, then repeat every 5 minutes (300,000ms)
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
