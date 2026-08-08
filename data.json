@@ -1,5 +1,31 @@
 [
   {
+    "date": "Rabu, 12 Ags 2026 — 19:30 WIB",
+    "isoDate": "2026-08-12T19:30:00+07:00",
+    "event": "US CPI & Core CPI",
+    "actual": "",
+    "forecast": "0.2%",
+    "previous": "-0.4%",
+    "trend": "-",
+    "strategy": "-",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "CPI MoM / YoY & Core CPI Release"
+  },
+  {
+    "date": "Kamis, 13 Ags 2026 — 19:30 WIB",
+    "isoDate": "2026-08-13T19:30:00+07:00",
+    "event": "US PPI & Core PPI",
+    "actual": "",
+    "forecast": "-0.1%",
+    "previous": "-0.3%",
+    "trend": "-",
+    "strategy": "-",
+    "pips": "",
+    "result": "PENDING",
+    "notes": "PPI MoM / YoY & Core PPI Release"
+  },
+  {
     "date": "Kamis, 30 Jul 2026 — 01:00 WIB",
     "isoDate": "2026-07-30T01:00:00+07:00",
     "event": "FOMC Rate & Statement",
@@ -8,7 +34,7 @@
     "previous": "3.75%",
     "trend": "DOWN",
     "strategy": "SELL",
-    "pips": "400",
+    "pips": "-400",
     "result": "LOSS",
     "notes": "Federal Funds Rate & FOMC Statement"
   },
