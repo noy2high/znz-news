@@ -321,12 +321,12 @@
                     
                     <!-- 1. XAUUSD Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Left Edge Glow Line (Amber) -->
+                        <!-- Thicker Edge Glow Bar (Amber) -->
                         <div class="card-edge-glow edge-glow-amber"></div>
 
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 pl-2">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
@@ -350,12 +350,12 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1">
+                            <div class="mt-1 pl-2">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
                                 <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3">
+                            <div class="flex items-center gap-2 mt-3 pl-2">
                                 <span id="arrow-xau" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
                                     ↗
                                 </span>
@@ -381,12 +381,12 @@
 
                     <!-- 2. BTC/USDT Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Left Edge Glow Line (Orange) -->
+                        <!-- Thicker Edge Glow Bar (Orange) -->
                         <div class="card-edge-glow edge-glow-orange"></div>
 
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 pl-2">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f97316/ffffff?text=BTC'">
@@ -410,12 +410,12 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1">
+                            <div class="mt-1 pl-2">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
                                 <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3">
+                            <div class="flex items-center gap-2 mt-3 pl-2">
                                 <span id="arrow-btc" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
                                     ↗
                                 </span>
@@ -441,12 +441,12 @@
 
                     <!-- 3. DXY Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Left Edge Glow Line (Teal) -->
+                        <!-- Thicker Edge Glow Bar (Teal) -->
                         <div class="card-edge-glow edge-glow-teal"></div>
 
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-3 pl-2">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-teal-400/50 bg-teal-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/14b8a6/ffffff?text=DXY'">
@@ -470,12 +470,12 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1">
+                            <div class="mt-1 pl-2">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
                                 <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3">
+                            <div class="flex items-center gap-2 mt-3 pl-2">
                                 <span id="arrow-dxy" class="w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold">
                                     ↘
                                 </span>
@@ -647,8 +647,8 @@
             localStorage.removeItem('znz_avatar');
             localStorage.removeItem('znz_logged_in');
             
-            // Redirect to login page or root auth portal
-            window.location.href = '/login.html';
+            // Redirect to the login folder subpath
+            window.location.href = '/login/';
         }
 
         // Dropdown Toggle for Market Cards
@@ -810,11 +810,13 @@
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
-        // Authenticated User Profile Loader (Checks localStorage session or URL params)
+        // Authenticated User Profile Loader (Syncs with Discord auth.js session)
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
-            const savedUser = localStorage.getItem('znz_user');
-            const savedAvatar = localStorage.getItem('znz_avatar');
+            
+            // Check auth.js or URL keys
+            const savedUser = localStorage.getItem('znz_user') || localStorage.getItem('discord_username') || localStorage.getItem('username');
+            const savedAvatar = localStorage.getItem('znz_avatar') || localStorage.getItem('discord_avatar') || localStorage.getItem('avatar');
 
             const username = urlParams.get('user') || savedUser || 'Arya';
             const avatar = urlParams.get('avatar') || savedAvatar;
