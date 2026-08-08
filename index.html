@@ -82,27 +82,24 @@
             box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
         }
 
-        /* Thicker Vertical Card Edge Glow Bar Styling */
-        .card-edge-glow {
-            position: absolute;
-            left: 0;
-            top: 20px;
-            bottom: 20px;
+        /* Price Inline Glow Bar Styling (Exact text height) */
+        .price-glow-bar {
             width: 4px;
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
+            height: 28px;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
-        .edge-glow-amber {
+        .glow-bar-amber {
             background-color: #f59e0b;
-            box-shadow: 3px 0 16px 2px rgba(245, 158, 11, 0.9);
+            box-shadow: 0 0 12px 2px rgba(245, 158, 11, 0.85);
         }
-        .edge-glow-orange {
+        .glow-bar-orange {
             background-color: #f97316;
-            box-shadow: 3px 0 16px 2px rgba(249, 115, 22, 0.9);
+            box-shadow: 0 0 12px 2px rgba(249, 115, 22, 0.85);
         }
-        .edge-glow-teal {
+        .glow-bar-teal {
             background-color: #14b8a6;
-            box-shadow: 3px 0 16px 2px rgba(20, 184, 166, 0.9);
+            box-shadow: 0 0 12px 2px rgba(20, 184, 166, 0.85);
         }
 
         /* Smooth Slide-Down Animation for Log Out Menu */
@@ -240,7 +237,7 @@
                     <svg id="profile-chevron" class="w-4 h-4 text-znz-muted transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </div>
 
-                <!-- Slide-Down Log Out Container with Smooth CSS Transition -->
+                <!-- Slide-Down Log Out Container -->
                 <div id="logout-container" class="slide-dropdown mt-2">
                     <div class="glass-card rounded-xl p-1.5 border border-red-500/20 shadow-xl">
                         <button onclick="handleLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-znz-red hover:bg-red-500/10 rounded-lg transition">
@@ -321,12 +318,9 @@
                     
                     <!-- 1. XAUUSD Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Edge Glow Bar (Amber) -->
-                        <div class="card-edge-glow edge-glow-amber"></div>
-
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3 pl-2">
+                                <div class="flex items-center gap-3">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
@@ -350,12 +344,16 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1 pl-2">
+                            <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
+                                <!-- Price with Amber Glowing Bar (Matches text height) -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="price-glow-bar glow-bar-amber"></div>
+                                    <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
+                                </div>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3 pl-2">
+                            <div class="flex items-center gap-2 mt-3">
                                 <span id="arrow-xau" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
                                     ↗
                                 </span>
@@ -381,12 +379,9 @@
 
                     <!-- 2. BTC/USDT Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Edge Glow Bar (Orange) -->
-                        <div class="card-edge-glow edge-glow-orange"></div>
-
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3 pl-2">
+                                <div class="flex items-center gap-3">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f97316/ffffff?text=BTC'">
@@ -410,12 +405,16 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1 pl-2">
+                            <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
+                                <!-- Price with Orange Glowing Bar (Matches text height) -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="price-glow-bar glow-bar-orange"></div>
+                                    <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
+                                </div>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3 pl-2">
+                            <div class="flex items-center gap-2 mt-3">
                                 <span id="arrow-btc" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
                                     ↗
                                 </span>
@@ -441,12 +440,9 @@
 
                     <!-- 3. DXY Card -->
                     <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
-                        <!-- Thicker Edge Glow Bar (Teal) -->
-                        <div class="card-edge-glow edge-glow-teal"></div>
-
                         <div>
                             <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3 pl-2">
+                                <div class="flex items-center gap-3">
                                     <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
                                         <div class="w-6 h-6 rounded-full border border-teal-400/50 bg-teal-500/10 flex items-center justify-center overflow-hidden">
                                             <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/14b8a6/ffffff?text=DXY'">
@@ -470,12 +466,16 @@
                                 </div>
                             </div>
 
-                            <div class="mt-1 pl-2">
+                            <div class="mt-1">
                                 <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                <!-- Price with Teal Glowing Bar (Matches text height) -->
+                                <div class="flex items-center gap-2.5">
+                                    <div class="price-glow-bar glow-bar-teal"></div>
+                                    <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                </div>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3 pl-2">
+                            <div class="flex items-center gap-2 mt-3">
                                 <span id="arrow-dxy" class="w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold">
                                     ↘
                                 </span>
@@ -633,7 +633,7 @@
             document.getElementById('breadcrumb-current').innerText = breadcrumbMap[viewName];
         }
 
-        // Toggle Profile Dropdown Menu with Smooth Slide Animation
+        // Toggle Profile Dropdown Menu
         function toggleProfileMenu() {
             const logoutContainer = document.getElementById('logout-container');
             const chevron = document.getElementById('profile-chevron');
@@ -641,13 +641,12 @@
             chevron.classList.toggle('rotate-180');
         }
 
-        // Redirect to Login Portal on Logout
+        // Complete Logout Handler (Wipes all session storage to prevent auto-login loop)
         function handleLogout() {
-            localStorage.removeItem('znz_user');
-            localStorage.removeItem('znz_avatar');
-            localStorage.removeItem('znz_logged_in');
+            localStorage.clear();
+            sessionStorage.clear();
             
-            // Redirect to the login folder subpath
+            // Redirect to the login folder
             window.location.href = '/login/';
         }
 
@@ -756,7 +755,7 @@
                     updateBadgeUI('change-xau', 'arrow-xau', goldChange);
                 }
 
-                // 2. Fetch Full Market Table (CoinGecko API with 7D, 30D, 1Y metrics)
+                // 2. Fetch Full Market Table (CoinGecko API)
                 const tableRes = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,pax-gold,ethereum,solana,tether,kinesis-silver&price_change_percentage=7d,30d,1y');
                 if (tableRes.ok) {
                     const coinData = await tableRes.json();
@@ -810,20 +809,36 @@
         fetchLiveMarketData();
         setInterval(fetchLiveMarketData, 300000);
 
-        // Authenticated User Profile Loader (Syncs with Discord auth.js session)
+        // Robust Authenticated Discord User Profile Loader
         function loadUserProfile() {
             const urlParams = new URLSearchParams(window.location.search);
             
-            // Check auth.js or URL keys
-            const savedUser = localStorage.getItem('znz_user') || localStorage.getItem('discord_username') || localStorage.getItem('username');
-            const savedAvatar = localStorage.getItem('znz_avatar') || localStorage.getItem('discord_avatar') || localStorage.getItem('avatar');
+            // Search all common storage keys used by auth.js or OAuth
+            let username = urlParams.get('user');
+            let avatarUrl = urlParams.get('avatar');
 
-            const username = urlParams.get('user') || savedUser || 'Arya';
-            const avatar = urlParams.get('avatar') || savedAvatar;
+            // Attempt to parse JSON objects stored by auth.js
+            try {
+                const discordUser = JSON.parse(localStorage.getItem('discord_user') || localStorage.getItem('user') || '{}');
+                if (discordUser.username) username = discordUser.global_name || discordUser.username;
+                if (discordUser.id && discordUser.avatar) {
+                    avatarUrl = `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`;
+                }
+            } catch (e) {
+                console.warn("Could not parse JSON profile:", e);
+            }
+
+            // Direct string fallbacks
+            if (!username) {
+                username = localStorage.getItem('znz_user') || localStorage.getItem('discord_username') || localStorage.getItem('username') || 'Arya';
+            }
+            if (!avatarUrl) {
+                avatarUrl = localStorage.getItem('znz_avatar') || localStorage.getItem('discord_avatar') || localStorage.getItem('avatar');
+            }
 
             document.getElementById('user-name').innerText = username;
-            if (avatar) {
-                document.getElementById('user-avatar').src = avatar;
+            if (avatarUrl) {
+                document.getElementById('user-avatar').src = avatarUrl;
             }
         }
 
