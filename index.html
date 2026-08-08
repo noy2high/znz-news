@@ -53,27 +53,46 @@
             touch-action: none !important;
         }
 
-        /* Looping White Siren / Laser Glow Sweep Header */
-        @keyframes sirenSweep {
+        /* Alternating White & Yellow Offscreen-to-Offscreen Laser Glide */
+        @keyframes laserGlide {
             0% {
-                left: -30%;
+                left: -40%;
+                opacity: 0;
             }
-            50% {
-                left: 100%;
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
             }
             100% {
-                left: -30%;
+                left: 110%;
+                opacity: 0;
             }
         }
 
-        .siren-glow-bar {
+        .laser-beam {
             position: absolute;
             top: 0;
             height: 2px;
             width: 35%;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0) 100%);
-            box-shadow: 0 0 25px 4px rgba(255, 255, 255, 0.9), 0 0 10px 1px rgba(255, 255, 255, 0.6);
-            animation: sirenSweep 3.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 100000;
+        }
+
+        /* White Laser Beam */
+        .laser-white {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+            box-shadow: 0 1px 15px 3px rgba(255, 255, 255, 0.95), 0 0 30px 6px rgba(255, 255, 255, 0.6);
+            animation: laserGlide 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        /* Yellow Laser Beam (Offset timing) */
+        .laser-yellow {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0) 0%, rgba(251, 191, 36, 1) 50%, rgba(245, 158, 11, 0) 100%);
+            box-shadow: 0 1px 15px 3px rgba(245, 158, 11, 0.95), 0 0 30px 6px rgba(245, 158, 11, 0.6);
+            animation: laserGlide 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-delay: 1.8s;
         }
 
         /* Custom Scrollbars */
@@ -244,8 +263,9 @@
     <!-- ========================================== -->
     <div id="maintenance-overlay" class="fixed inset-0 z-[99999] bg-[#050507] flex flex-col items-center justify-between p-6 sm:p-8 text-center select-none pointer-events-auto overflow-hidden">
         
-        <!-- Looping White Siren Laser Beam Top Header -->
-        <div class="siren-glow-bar"></div>
+        <!-- Alternating White & Yellow Top Scanner Laser Beams -->
+        <div class="laser-beam laser-white"></div>
+        <div class="laser-beam laser-yellow"></div>
 
         <!-- Top Spacer -->
         <div></div>
