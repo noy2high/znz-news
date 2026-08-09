@@ -6,6 +6,13 @@
     <title>ZNZ | Sign In</title>
     <link rel="icon" type="image/png" href="../favicon.png">
     
+    <!-- Instant Session Check -->
+    <script>
+        if (localStorage.getItem('znz_user_token') && !window.location.hash.includes('access_token')) {
+            window.location.replace('/');
+        }
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -46,7 +53,7 @@
             background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
         }
 
-        /* Soft Pulsing Dust Particles (Replaces harsh white dots) */
+        /* Soft Pulsing Dust Particles */
         @keyframes softPulse {
             0%, 100% { opacity: 0.1; transform: scale(0.9); }
             50% { opacity: 0.35; transform: scale(1.1); }
@@ -97,19 +104,15 @@
 
     <!-- Ambient Nebula & Deep Space Layer -->
     <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden nebula-glow">
-        
-        <!-- Soft Blurry Particles -->
         <div class="dust-particle w-1.5 h-1.5 top-[15%] left-[20%]" style="animation-delay: 0s;"></div>
         <div class="dust-particle w-2 h-2 top-[30%] left-[82%]" style="animation-delay: 1.2s;"></div>
         <div class="dust-particle w-1 h-1 top-[70%] left-[15%]" style="animation-delay: 2.5s;"></div>
         <div class="dust-particle w-1.5 h-1.5 top-[80%] left-[75%]" style="animation-delay: 0.8s;"></div>
         <div class="dust-particle w-2 h-2 top-[22%] left-[50%]" style="animation-delay: 3.1s;"></div>
 
-        <!-- Realistic Tapered Shooting Stars -->
         <div class="shooting-star-streak top-[10%] right-[15%]" style="animation-delay: 0s; animation-duration: 9s;"></div>
         <div class="shooting-star-streak top-[35%] right-[5%]" style="animation-delay: 4.5s; animation-duration: 11s;"></div>
         <div class="shooting-star-streak top-[5%] right-[45%]" style="animation-delay: 7s; animation-duration: 10s;"></div>
-
     </div>
 
     <!-- Auth Card Container -->
