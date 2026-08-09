@@ -38,14 +38,13 @@
         }
     </script>
 
-    <!-- IMMEDIATE AUTH GUARD: Prevents rendering if not logged in -->
+    <!-- IMMEDIATE AUTH GUARD -->
     <script>
         (function guardAuthSession() {
             const urlParams = new URLSearchParams(window.location.search);
             const userFromParam = urlParams.get('user');
             const avatarFromParam = urlParams.get('avatar');
 
-            // If query params exist (coming back from OAuth callback), persist them
             if (userFromParam) {
                 localStorage.setItem('znz_user', userFromParam);
                 localStorage.setItem('znz_logged_in', 'true');
@@ -54,13 +53,12 @@
                 localStorage.setItem('znz_avatar', avatarFromParam);
             }
 
-            // Check if any valid auth token/session exists
             const isLoggedIn = localStorage.getItem('znz_logged_in') === 'true' ||
+                               localStorage.getItem('znz_user_token') ||
                                localStorage.getItem('znz_user') ||
                                localStorage.getItem('discord_user') ||
                                localStorage.getItem('user');
 
-            // If not authenticated, bounce to the login portal
             if (!isLoggedIn) {
                 window.location.replace('/login/');
             }
@@ -78,6 +76,7 @@
         /* Custom Scrollbars */
         ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #050507;
@@ -145,7 +144,7 @@
             transform: translateY(0);
         }
 
-        /* Thinner, Crisp Silver/White Chart Sparkline Lines */
+        /* Sparkline SVG Lines */
         .sparkline-svg path.line-path {
             stroke: #e5e7eb;
             stroke-width: 1.5;
@@ -159,97 +158,39 @@
             transition: all 0.4s ease-in-out;
         }
 
-        /* Side Glow Cards for News */
-        .glow-card-purple {
-            position: relative;
-            overflow: hidden;
+        /* Mobile Overlay Transition */
+        #mobile-overlay {
+            transition: opacity 0.3s ease;
         }
-        .glow-card-purple::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; right: 0;
-            width: 4px;
-            background: linear-gradient(180deg, #6366F1 0%, #a855f7 100%);
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            box-shadow: -4px 0 22px 6px rgba(99, 102, 241, 0.95);
-        }
-
-        .glow-card-green {
-            position: relative;
-            overflow: hidden;
-        }
-        .glow-card-green::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; right: 0;
-            width: 4px;
-            background: #10B981;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            box-shadow: -4px 0 22px 6px rgba(16, 185, 129, 0.95);
-        }
-
-        .glow-card-red {
-            position: relative;
-            overflow: hidden;
-        }
-        .glow-card-red::after {
-            content: '';
-            position: absolute;
-            top: 0; bottom: 0; right: 0;
-            width: 4px;
-            background: #EF4444;
-            border-top-right-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            box-shadow: -4px 0 22px 6px rgba(239, 68, 68, 0.95);
-        }
-
-        .glow-bottom-green {
-            position: relative;
-            overflow: hidden;
-        }
-        .glow-bottom-green::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 4px;
-            background: #10B981;
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            box-shadow: 0 -4px 22px 6px rgba(16, 185, 129, 0.95);
-        }
-
-        .glow-bottom-red {
-            position: relative;
-            overflow: hidden;
-        }
-        .glow-bottom-red::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 4px;
-            background: #EF4444;
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            box-shadow: 0 -4px 22px 6px rgba(239, 68, 68, 0.95);
+        #sidebar-container {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden flex bg-znz-bg text-sans">
+<body class="h-screen overflow-hidden flex flex-col md:flex-row bg-znz-bg text-sans">
 
     <!-- ========================================== -->
-    <!-- 1. LEFT SIDEBAR                            -->
+    <!-- MOBILE BACKDROP OVERLAY                    -->
     <!-- ========================================== -->
-    <aside class="w-64 border-r border-znz-border bg-znz-sidebar flex flex-col justify-between p-5 flex-shrink-0 z-20">
+    <div id="mobile-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-30 hidden md:hidden opacity-0"></div>
+
+    <!-- ========================================== -->
+    <!-- 1. NAVIGATION SIDEBAR                      -->
+    <!-- ========================================== -->
+    <aside id="sidebar-container" class="fixed md:static inset-y-0 left-0 w-64 border-r border-znz-border bg-znz-sidebar flex flex-col justify-between p-5 flex-shrink-0 z-40 -translate-x-full md:translate-x-0">
         <div>
-            <!-- ZNZ Brand Logo -->
-            <div class="flex items-center gap-3 pb-6 mb-6 border-b border-znz-border">
-                <img src="logo.png" alt="ZNZ Logo" class="w-9 h-9 rounded-lg object-contain bg-black/40 p-1 border border-znz-border" onerror="this.style.display='none'">
-                <div>
-                    <h1 class="font-extrabold text-white text-base leading-none tracking-tight">ZNZ</h1>
-                    <p class="text-[10px] text-znz-muted mt-1 font-medium tracking-wide">Trading Terminal</p>
+            <!-- ZNZ Brand Logo + Mobile Close Button -->
+            <div class="flex items-center justify-between pb-6 mb-6 border-b border-znz-border">
+                <div class="flex items-center gap-3">
+                    <img src="logo.png" alt="ZNZ Logo" class="w-9 h-9 rounded-lg object-contain bg-black/40 p-1 border border-znz-border" onerror="this.style.display='none'">
+                    <div>
+                        <h1 class="font-extrabold text-white text-base leading-none tracking-tight">ZNZ</h1>
+                        <p class="text-[10px] text-znz-muted mt-1 font-medium tracking-wide">Trading Terminal</p>
+                    </div>
                 </div>
+                <button onclick="toggleMobileSidebar()" class="md:hidden text-znz-muted hover:text-white p-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
 
             <!-- Interactive Discord Profile Container -->
@@ -313,19 +254,33 @@
     <!-- ========================================== -->
     <!-- 2. RIGHT MAIN CONTAINER                    -->
     <!-- ========================================== -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <div class="flex-1 flex flex-col h-full overflow-hidden w-full">
 
-        <!-- Top Header Navigation Bar -->
-        <header class="h-14 border-b border-znz-border px-8 flex items-center justify-between flex-shrink-0 bg-znz-sidebar/40 backdrop-blur-md">
-            <div class="flex items-center gap-2 text-xs font-semibold">
-                <span class="text-znz-muted">Overview</span>
-                <span class="text-znz-muted">/</span>
-                <span id="breadcrumb-current" class="text-white font-bold">Dashboard</span>
+        <!-- Header Navigation Bar (Includes 3 Stripes Mobile Menu Button) -->
+        <header class="h-14 border-b border-znz-border px-4 sm:px-8 flex items-center justify-between flex-shrink-0 bg-znz-sidebar/40 backdrop-blur-md z-10">
+            <div class="flex items-center gap-3">
+                <!-- 3 Stripes Hamburger Menu Toggle for Mobile -->
+                <button onclick="toggleMobileSidebar()" class="md:hidden text-znz-muted hover:text-white p-1 rounded-lg focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <div class="flex items-center gap-2 text-xs font-semibold">
+                    <span class="text-znz-muted">Overview</span>
+                    <span class="text-znz-muted">/</span>
+                    <span id="breadcrumb-current" class="text-white font-bold">Dashboard</span>
+                </div>
+            </div>
+            
+            <!-- Mobile Brand Emblem -->
+            <div class="md:hidden flex items-center gap-2">
+                <img src="logo.png" alt="ZNZ" class="w-6 h-6 rounded object-contain bg-black/40 p-0.5 border border-znz-border" onerror="this.style.display='none'">
+                <span class="font-extrabold text-white text-xs tracking-tight">ZNZ</span>
             </div>
         </header>
 
         <!-- Dynamic Main Content View -->
-        <main class="flex-1 overflow-y-auto p-6 sm:p-8">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
 
             <!-- TAB 1: DASHBOARD -->
             <div id="view-dashboard" class="view-section space-y-6 max-w-6xl mx-auto">
@@ -339,14 +294,14 @@
                         </span>
                         <span>Last update: <strong id="update-timer-text" class="text-white font-semibold">0 min ago</strong></span>
                     </div>
-                    <h2 class="text-2xl font-extrabold text-white tracking-tight">Live Market Updates</h2>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Live Market Updates</h2>
                 </div>
 
                 <!-- 3 Fancy Glassmorphism Cards Grid (XAUUSD, BTC, DXY) -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     
                     <!-- 1. XAUUSD Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
@@ -406,7 +361,7 @@
                     </div>
 
                     <!-- 2. BTC/USDT Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
@@ -466,7 +421,7 @@
                     </div>
 
                     <!-- 3. DXY Card -->
-                    <div class="glass-card rounded-2xl p-6 relative flex flex-col justify-between h-[300px] overflow-hidden">
+                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
                         <div>
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center gap-3">
@@ -527,23 +482,23 @@
 
                 </div>
 
-                <!-- MARKET OVERVIEW TABLE -->
-                <div class="glass-card rounded-2xl p-6">
-                    <div class="flex items-center justify-between mb-5">
+                <!-- MARKET OVERVIEW TABLE (Mobile Horizontal Scrollable) -->
+                <div class="glass-card rounded-2xl p-4 sm:p-6">
+                    <div class="flex items-center justify-between mb-4 sm:mb-5">
                         <div class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-znz-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             <span class="text-xs text-znz-muted font-bold">Live Updates</span>
                         </div>
-                        <span class="text-xs font-bold text-white bg-white/10 px-3 py-1 rounded-lg border border-white/10">All Markets</span>
+                        <span class="text-[11px] sm:text-xs font-bold text-white bg-white/10 px-2.5 py-1 rounded-lg border border-white/10">All Markets</span>
                     </div>
 
-                    <h3 class="text-xl font-extrabold text-white mb-6">Market Overview</h3>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-white mb-4 sm:mb-6">Market Overview</h3>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                    <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                        <table class="w-full min-w-[550px] text-left border-collapse">
                             <thead>
-                                <tr class="text-[11px] font-bold text-znz-muted uppercase border-b border-znz-border/60 pb-3">
-                                    <th class="py-3 px-2 w-12">No</th>
+                                <tr class="text-[10px] sm:text-[11px] font-bold text-znz-muted uppercase border-b border-znz-border/60 pb-3">
+                                    <th class="py-3 px-2 w-10">No</th>
                                     <th class="py-3 px-2">Coin name</th>
                                     <th class="py-3 px-2">Price</th>
                                     <th class="py-3 px-2 text-right">Weekly %</th>
@@ -567,22 +522,22 @@
                 <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
                     <div class="glow-bottom-green glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
-                        <p id="stat-winrate" class="text-2xl sm:text-3xl font-extrabold text-white">0%</p>
+                        <p id="stat-winrate" class="text-xl sm:text-3xl font-extrabold text-white">0%</p>
                     </div>
 
                     <div class="glow-bottom-red glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">STREAK</p>
-                        <p id="stat-streak" class="text-2xl sm:text-3xl font-extrabold text-white">0 Streak</p>
+                        <p id="stat-streak" class="text-xl sm:text-3xl font-extrabold text-white">0 Streak</p>
                     </div>
 
                     <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
-                        <p id="stat-wins" class="text-2xl sm:text-3xl font-extrabold text-znz-green">0</p>
+                        <p id="stat-wins" class="text-xl sm:text-3xl font-extrabold text-znz-green">0</p>
                     </div>
 
                     <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
-                        <p id="stat-losses" class="text-2xl sm:text-3xl font-extrabold text-znz-red">0</p>
+                        <p id="stat-losses" class="text-xl sm:text-3xl font-extrabold text-znz-red">0</p>
                     </div>
                 </section>
 
@@ -610,11 +565,11 @@
             <!-- TAB 3: REPLAY CHART -->
             <div id="view-replay" class="view-section hidden h-full flex flex-col max-w-6xl mx-auto">
                 <div class="mb-4">
-                    <h2 class="text-xl font-bold text-white tracking-tight">XAUUSD Interactive Replay Chart</h2>
-                    <p class="text-xs text-znz-muted mt-1">TradingView charting engine with historical timeframe controls</p>
+                    <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">XAUUSD Interactive Replay Chart</h2>
+                    <p class="text-xs text-znz-muted mt-0.5">TradingView charting engine with historical timeframe controls</p>
                 </div>
 
-                <div class="flex-1 w-full glass-card rounded-2xl overflow-hidden min-h-[550px]">
+                <div class="flex-1 w-full glass-card rounded-2xl overflow-hidden min-h-[450px] sm:min-h-[550px]">
                     <div class="tradingview-widget-container" style="height:100%;width:100%">
                         <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
                         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -643,6 +598,24 @@
     <!-- 3. JS NAVIGATION LOGIC & REAL API FETCH    -->
     <!-- ========================================== -->
     <script>
+        // Mobile Sidebar Toggle Logic
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar-container');
+            const overlay = document.getElementById('mobile-overlay');
+
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+
+            if (isOpen) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            } else {
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                sidebar.classList.remove('-translate-x-full');
+            }
+        }
+
         // View Tab Switcher
         function switchTab(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
@@ -657,6 +630,14 @@
                 'replay': 'Replay Chart'
             };
             document.getElementById('breadcrumb-current').innerText = breadcrumbMap[viewName];
+
+            // Close mobile sidebar on tab change
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar-container');
+                if (!sidebar.classList.contains('-translate-x-full')) {
+                    toggleMobileSidebar();
+                }
+            }
         }
 
         // Toggle Profile Dropdown Menu
@@ -667,7 +648,7 @@
             chevron.classList.toggle('rotate-180');
         }
 
-        // Complete Logout Handler (Wipes all session storage and redirects to /login/)
+        // Complete Logout Handler
         function handleLogout() {
             localStorage.clear();
             sessionStorage.clear();
