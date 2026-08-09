@@ -158,7 +158,83 @@
             transition: all 0.4s ease-in-out;
         }
 
-        /* Mobile Overlay Transition */
+        /* Side Glow Cards for News Trade Section */
+        .glow-card-purple {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card-purple::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #6366F1 0%, #a855f7 100%);
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+            box-shadow: 4px 0 18px 4px rgba(99, 102, 241, 0.8);
+        }
+
+        .glow-card-green {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card-green::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 4px;
+            background: #10B981;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+            box-shadow: 4px 0 18px 4px rgba(16, 185, 129, 0.8);
+        }
+
+        .glow-card-red {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-card-red::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 4px;
+            background: #EF4444;
+            border-top-left-radius: 0.75rem;
+            border-bottom-left-radius: 0.75rem;
+            box-shadow: 4px 0 18px 4px rgba(239, 68, 68, 0.8);
+        }
+
+        .glow-bottom-green {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-bottom-green::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 4px;
+            background: #10B981;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            box-shadow: 0 -4px 22px 6px rgba(16, 185, 129, 0.95);
+        }
+
+        .glow-bottom-red {
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-bottom-red::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 4px;
+            background: #EF4444;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            box-shadow: 0 -4px 22px 6px rgba(239, 68, 68, 0.95);
+        }
+
+        /* Mobile Sidebar Transitions */
         #mobile-overlay {
             transition: opacity 0.3s ease;
         }
@@ -256,10 +332,9 @@
     <!-- ========================================== -->
     <div class="flex-1 flex flex-col h-full overflow-hidden w-full">
 
-        <!-- Header Navigation Bar (Includes 3 Stripes Mobile Menu Button) -->
+        <!-- Header Navigation Bar -->
         <header class="h-14 border-b border-znz-border px-4 sm:px-8 flex items-center justify-between flex-shrink-0 bg-znz-sidebar/40 backdrop-blur-md z-10">
             <div class="flex items-center gap-3">
-                <!-- 3 Stripes Hamburger Menu Toggle for Mobile -->
                 <button onclick="toggleMobileSidebar()" class="md:hidden text-znz-muted hover:text-white p-1 rounded-lg focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -272,7 +347,6 @@
                 </div>
             </div>
             
-            <!-- Mobile Brand Emblem -->
             <div class="md:hidden flex items-center gap-2">
                 <img src="logo.png" alt="ZNZ" class="w-6 h-6 rounded object-contain bg-black/40 p-0.5 border border-znz-border" onerror="this.style.display='none'">
                 <span class="font-extrabold text-white text-xs tracking-tight">ZNZ</span>
@@ -297,192 +371,194 @@
                     <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Live Market Updates</h2>
                 </div>
 
-                <!-- 3 Fancy Glassmorphism Cards Grid (XAUUSD, BTC, DXY) -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                    
-                    <!-- 1. XAUUSD Card -->
-                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
-                        <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
-                                        <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
+                <!-- 3 Fancy Glassmorphism Cards Container (Side-By-Side Scrollable on Mobile) -->
+                <div class="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <div class="grid grid-cols-3 gap-4 sm:gap-5 min-w-[780px] sm:min-w-0">
+                        
+                        <!-- 1. XAUUSD Card -->
+                        <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                            <div class="w-6 h-6 rounded-full border border-amber-400/50 bg-amber-500/10 flex items-center justify-center overflow-hidden">
+                                                <img src="xauusd.png" alt="XAUUSD" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f59e0b/ffffff?text=XAU'">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">XAU / USD</p>
+                                            <h3 class="text-sm font-extrabold text-white">Gold Spot</h3>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">XAU / USD</p>
-                                        <h3 class="text-sm font-extrabold text-white">Gold Spot</h3>
-                                    </div>
-                                </div>
 
-                                <div class="relative">
-                                    <button onclick="toggleMenu('menu-xau')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                                    </button>
-                                    <div id="menu-xau" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
-                                        <button onclick="updateChartTimeframe('xau', '1D')" id="tf-xau-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
-                                        <button onclick="updateChartTimeframe('xau', '1W')" id="tf-xau-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
-                                        <button onclick="updateChartTimeframe('xau', '1M')" id="tf-xau-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-1">
-                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <div class="flex items-center gap-2.5">
-                                    <div class="price-glow-bar glow-bar-amber"></div>
-                                    <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-3">
-                                <span id="arrow-xau" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
-                                    ↗
-                                </span>
-                                <span id="change-xau" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
-                                    +2.39%
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="w-full h-20 relative mt-2">
-                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="grad-xau" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
-                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
-                                    </linearGradient>
-                                </defs>
-                                <path id="fill-xau" class="fill-path" d="M 0 60 L 20 52 L 40 58 L 60 42 L 80 48 L 100 35 L 120 40 L 140 25 L 160 30 L 180 15 L 200 10 L 200 80 L 0 80 Z" fill="url(#grad-xau)" stroke="none" />
-                                <path id="line-xau" class="line-path" d="M 0 60 L 20 52 L 40 58 L 60 42 L 80 48 L 100 35 L 120 40 L 140 25 L 160 30 L 180 15 L 200 10" fill="none" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- 2. BTC/USDT Card -->
-                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
-                        <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
-                                        <div class="w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f97316/ffffff?text=BTC'">
+                                    <div class="relative">
+                                        <button onclick="toggleMenu('menu-xau')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                        </button>
+                                        <div id="menu-xau" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                            <button onclick="updateChartTimeframe('xau', '1D')" id="tf-xau-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
+                                            <button onclick="updateChartTimeframe('xau', '1W')" id="tf-xau-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                            <button onclick="updateChartTimeframe('xau', '1M')" id="tf-xau-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">BTC / USDT</p>
-                                        <h3 class="text-sm font-extrabold text-white">Bitcoin</h3>
+                                </div>
+
+                                <div class="mt-1">
+                                    <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="price-glow-bar glow-bar-amber"></div>
+                                        <p id="price-xau" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$4,342.28</p>
                                     </div>
                                 </div>
 
-                                <div class="relative">
-                                    <button onclick="toggleMenu('menu-btc')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                                    </button>
-                                    <div id="menu-btc" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
-                                        <button onclick="updateChartTimeframe('btc', '1D')" id="tf-btc-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
-                                        <button onclick="updateChartTimeframe('btc', '1W')" id="tf-btc-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
-                                        <button onclick="updateChartTimeframe('btc', '1M')" id="tf-btc-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
-                                    </div>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span id="arrow-xau" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
+                                        ↗
+                                    </span>
+                                    <span id="change-xau" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
+                                        +2.39%
+                                    </span>
                                 </div>
                             </div>
 
-                            <div class="mt-1">
-                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <div class="flex items-center gap-2.5">
-                                    <div class="price-glow-bar glow-bar-orange"></div>
-                                    <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-center gap-2 mt-3">
-                                <span id="arrow-btc" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
-                                    ↗
-                                </span>
-                                <span id="change-btc" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
-                                    +1.09%
-                                </span>
+                            <div class="w-full h-20 relative mt-2">
+                                <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="grad-xau" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+                                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path id="fill-xau" class="fill-path" d="M 0 60 L 20 52 L 40 58 L 60 42 L 80 48 L 100 35 L 120 40 L 140 25 L 160 30 L 180 15 L 200 10 L 200 80 L 0 80 Z" fill="url(#grad-xau)" stroke="none" />
+                                    <path id="line-xau" class="line-path" d="M 0 60 L 20 52 L 40 58 L 60 42 L 80 48 L 100 35 L 120 40 L 140 25 L 160 30 L 180 15 L 200 10" fill="none" />
+                                </svg>
                             </div>
                         </div>
 
-                        <div class="w-full h-20 relative mt-2">
-                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="grad-btc" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
-                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
-                                    </linearGradient>
-                                </defs>
-                                <path id="fill-btc" class="fill-path" d="M 0 45 L 20 55 L 40 38 L 60 62 L 80 40 L 100 50 L 120 28 L 140 45 L 160 20 L 180 32 L 200 12 L 200 80 L 0 80 Z" fill="url(#grad-btc)" stroke="none" />
-                                <path id="line-btc" class="line-path" d="M 0 45 L 20 55 L 40 38 L 60 62 L 80 40 L 100 50 L 120 28 L 140 45 L 160 20 L 180 32 L 200 12" fill="none" />
-                            </svg>
-                        </div>
-                    </div>
-
-                    <!-- 3. DXY Card -->
-                    <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
-                        <div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
-                                        <div class="w-6 h-6 rounded-full border border-teal-400/50 bg-teal-500/10 flex items-center justify-center overflow-hidden">
-                                            <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/14b8a6/ffffff?text=DXY'">
+                        <!-- 2. BTC/USDT Card -->
+                        <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                            <div class="w-6 h-6 rounded-full border border-orange-500/50 bg-orange-500/10 flex items-center justify-center overflow-hidden">
+                                                <img src="btc.png" alt="Bitcoin" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/f97316/ffffff?text=BTC'">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">BTC / USDT</p>
+                                            <h3 class="text-sm font-extrabold text-white">Bitcoin</h3>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">DXY / USD</p>
-                                        <h3 class="text-sm font-extrabold text-white">US Dollar Index</h3>
+
+                                    <div class="relative">
+                                        <button onclick="toggleMenu('menu-btc')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                        </button>
+                                        <div id="menu-btc" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                            <button onclick="updateChartTimeframe('btc', '1D')" id="tf-btc-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
+                                            <button onclick="updateChartTimeframe('btc', '1W')" id="tf-btc-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                            <button onclick="updateChartTimeframe('btc', '1M')" id="tf-btc-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="relative">
-                                    <button onclick="toggleMenu('menu-dxy')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                                    </button>
-                                    <div id="menu-dxy" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
-                                        <button onclick="updateChartTimeframe('dxy', '1D')" id="tf-dxy-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
-                                        <button onclick="updateChartTimeframe('dxy', '1W')" id="tf-dxy-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
-                                        <button onclick="updateChartTimeframe('dxy', '1M')" id="tf-dxy-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                <div class="mt-1">
+                                    <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="price-glow-bar glow-bar-orange"></div>
+                                        <p id="price-btc" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">$109,687.60</p>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="mt-1">
-                                <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
-                                <div class="flex items-center gap-2.5">
-                                    <div class="price-glow-bar glow-bar-teal"></div>
-                                    <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span id="arrow-btc" class="w-7 h-7 rounded-full bg-znz-green/15 border border-znz-green/30 flex items-center justify-center text-znz-green text-xs font-bold">
+                                        ↗
+                                    </span>
+                                    <span id="change-btc" class="text-xs font-bold text-znz-green bg-znz-green/10 border border-znz-green/20 px-2.5 py-1 rounded-full">
+                                        +1.09%
+                                    </span>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2 mt-3">
-                                <span id="arrow-dxy" class="w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold">
-                                    ↘
-                                </span>
-                                <span id="change-dxy" class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2.5 py-1 rounded-full">
-                                    -0.34%
-                                </span>
+                            <div class="w-full h-20 relative mt-2">
+                                <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="grad-btc" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+                                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path id="fill-btc" class="fill-path" d="M 0 45 L 20 55 L 40 38 L 60 62 L 80 40 L 100 50 L 120 28 L 140 45 L 160 20 L 180 32 L 200 12 L 200 80 L 0 80 Z" fill="url(#grad-btc)" stroke="none" />
+                                    <path id="line-btc" class="line-path" d="M 0 45 L 20 55 L 40 38 L 60 62 L 80 40 L 100 50 L 120 28 L 140 45 L 160 20 L 180 32 L 200 12" fill="none" />
+                                </svg>
                             </div>
                         </div>
 
-                        <div class="w-full h-20 relative mt-2">
-                            <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
-                                <defs>
-                                    <linearGradient id="grad-dxy" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
-                                        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
-                                    </linearGradient>
-                                </defs>
-                                <path id="fill-dxy" class="fill-path" d="M 0 15 L 20 25 L 40 18 L 60 35 L 80 28 L 100 48 L 120 42 L 140 58 L 160 52 L 180 65 L 200 70 L 200 80 L 0 80 Z" fill="url(#grad-dxy)" stroke="none" />
-                                <path id="line-dxy" class="line-path" d="M 0 15 L 20 25 L 40 18 L 60 35 L 80 28 L 100 48 L 120 42 L 140 58 L 160 52 L 180 65 L 200 70" fill="none" />
-                            </svg>
+                        <!-- 3. DXY Card -->
+                        <div class="glass-card rounded-2xl p-5 sm:p-6 relative flex flex-col justify-between h-[280px] sm:h-[300px] overflow-hidden">
+                            <div>
+                                <div class="flex justify-between items-start mb-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-[42px] h-[48px] rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center p-2">
+                                            <div class="w-6 h-6 rounded-full border border-teal-400/50 bg-teal-500/10 flex items-center justify-center overflow-hidden">
+                                                <img src="dxy.png" alt="DXY" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/24/14b8a6/ffffff?text=DXY'">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-[11px] text-znz-muted font-bold tracking-wider uppercase">DXY / USD</p>
+                                            <h3 class="text-sm font-extrabold text-white">US Dollar Index</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative">
+                                        <button onclick="toggleMenu('menu-dxy')" class="text-znz-muted hover:text-white p-1 rounded-lg transition">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                        </button>
+                                        <div id="menu-dxy" class="hidden absolute right-0 mt-2 w-36 glass-card rounded-xl shadow-2xl py-2 z-30 text-xs font-semibold">
+                                            <button onclick="updateChartTimeframe('dxy', '1D')" id="tf-dxy-1D" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-white font-bold">Timeframe: 1D</button>
+                                            <button onclick="updateChartTimeframe('dxy', '1W')" id="tf-dxy-1W" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1W</button>
+                                            <button onclick="updateChartTimeframe('dxy', '1M')" id="tf-dxy-1M" class="w-full text-left px-4 py-1.5 hover:bg-white/10 text-znz-muted">Timeframe: 1M</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-1">
+                                    <p class="text-xs text-znz-muted font-semibold mb-0.5">Price</p>
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="price-glow-bar glow-bar-teal"></div>
+                                        <p id="price-dxy" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">104.34</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span id="arrow-dxy" class="w-7 h-7 rounded-full bg-znz-red/15 border border-znz-red/30 flex items-center justify-center text-znz-red text-xs font-bold">
+                                        ↘
+                                    </span>
+                                    <span id="change-dxy" class="text-xs font-bold text-znz-red bg-znz-red/10 border border-znz-red/20 px-2.5 py-1 rounded-full">
+                                        -0.34%
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="w-full h-20 relative mt-2">
+                                <svg class="sparkline-svg w-full h-full" viewBox="0 0 200 80" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="grad-dxy" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+                                            <stop offset="100%" stop-color="#ffffff" stop-opacity="0.0" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path id="fill-dxy" class="fill-path" d="M 0 15 L 20 25 L 40 18 L 60 35 L 80 28 L 100 48 L 120 42 L 140 58 L 160 52 L 180 65 L 200 70 L 200 80 L 0 80 Z" fill="url(#grad-dxy)" stroke="none" />
+                                    <path id="line-dxy" class="line-path" d="M 0 15 L 20 25 L 40 18 L 60 35 L 80 28 L 100 48 L 120 42 L 140 58 L 160 52 L 180 65 L 200 70" fill="none" />
+                                </svg>
+                            </div>
                         </div>
+
                     </div>
-
                 </div>
 
-                <!-- MARKET OVERVIEW TABLE (Mobile Horizontal Scrollable) -->
+                <!-- MARKET OVERVIEW TABLE (Mobile Responsive Scrollable Layout) -->
                 <div class="glass-card rounded-2xl p-4 sm:p-6">
                     <div class="flex items-center justify-between mb-4 sm:mb-5">
                         <div class="flex items-center gap-2">
@@ -494,7 +570,7 @@
 
                     <h3 class="text-lg sm:text-xl font-extrabold text-white mb-4 sm:mb-6">Market Overview</h3>
 
-                    <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <div class="w-full overflow-x-auto">
                         <table class="w-full min-w-[550px] text-left border-collapse">
                             <thead>
                                 <tr class="text-[10px] sm:text-[11px] font-bold text-znz-muted uppercase border-b border-znz-border/60 pb-3">
@@ -522,7 +598,7 @@
                 <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8">
                     <div class="glow-bottom-green glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINRATE</p>
-                        <p id="stat-winrate" class="text-xl sm:text-3xl font-extrabold text-white">0%</p>
+                        <p id="stat-winrate" class="text-xl sm:text-3xl font-extrabold text-white">86%</p>
                     </div>
 
                     <div class="glow-bottom-red glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
@@ -532,12 +608,12 @@
 
                     <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">WINS</p>
-                        <p id="stat-wins" class="text-xl sm:text-3xl font-extrabold text-znz-green">0</p>
+                        <p id="stat-wins" class="text-xl sm:text-3xl font-extrabold text-znz-green">6</p>
                     </div>
 
                     <div class="glass-card rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center text-center">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-znz-muted mb-1">LOSSES</p>
-                        <p id="stat-losses" class="text-xl sm:text-3xl font-extrabold text-znz-red">0</p>
+                        <p id="stat-losses" class="text-xl sm:text-3xl font-extrabold text-znz-red">1</p>
                     </div>
                 </section>
 
@@ -547,7 +623,35 @@
                         <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-znz-muted">Upcoming News</h2>
                     </div>
                     <div id="upcoming-container" class="space-y-3">
-                        <div class="text-xs text-znz-muted py-4 text-center">Loading upcoming news...</div>
+                        <div class="glass-card glow-card-purple rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-extrabold text-white text-sm">US CPI & Core CPI</h3>
+                                    <span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-500/30">SCHEDULED</span>
+                                </div>
+                                <p class="text-xs text-znz-muted">Rabu, 12 Ags 2026 — 19:30 WIB</p>
+                                <p class="text-[11px] text-znz-muted mt-2">CPI MoM / YoY & Core CPI Release</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold self-end sm:self-center">
+                                <div><span class="text-[10px] text-znz-muted block font-normal">FORECAST</span>0.2%</div>
+                                <div><span class="text-[10px] text-znz-muted block font-normal">PREVIOUS</span>-0.4%</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card glow-card-purple rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-extrabold text-white text-sm">US PPI & Core PPI</h3>
+                                    <span class="bg-indigo-500/20 text-indigo-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-500/30">SCHEDULED</span>
+                                </div>
+                                <p class="text-xs text-znz-muted">Kamis, 13 Ags 2026 — 19:30 WIB</p>
+                                <p class="text-[11px] text-znz-muted mt-2">PPI MoM / YoY & Core PPI Release</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold self-end sm:self-center">
+                                <div><span class="text-[10px] text-znz-muted block font-normal">FORECAST</span>-0.1%</div>
+                                <div><span class="text-[10px] text-znz-muted block font-normal">PREVIOUS</span>-0.3%</div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -557,7 +661,23 @@
                         <h2 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-znz-muted">Past News</h2>
                     </div>
                     <div id="past-container" class="space-y-3">
-                        <div class="text-xs text-znz-muted py-4 text-center">Loading past news...</div>
+                        <div class="glass-card glow-card-red rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h3 class="font-extrabold text-white text-sm">FOMC Rate & Statement</h3>
+                                    <span class="bg-znz-red/20 text-znz-red text-[10px] font-bold px-2 py-0.5 rounded-full border border-znz-red/30">SELL</span>
+                                    <span class="bg-znz-red text-white text-[10px] font-bold px-2 py-0.5 rounded-full">LOSS</span>
+                                </div>
+                                <p class="text-xs text-znz-muted">Kamis, 30 Jul 2026 — 01:00 WIB</p>
+                                <p class="text-[11px] text-znz-muted mt-2">Federal Funds Rate & FOMC Statement</p>
+                            </div>
+                            <div class="flex items-center gap-4 text-xs font-bold self-end sm:self-center">
+                                <div><span class="text-[10px] text-znz-muted block font-normal">ACTUAL</span><span class="text-znz-red">3.75%</span></div>
+                                <div><span class="text-[10px] text-znz-muted block font-normal">FORECAST</span>3.75%</div>
+                                <div><span class="text-[10px] text-znz-muted block font-normal">PREVIOUS</span>3.75%</div>
+                                <div><span class="text-[10px] text-znz-muted block font-normal">PIPS</span><span class="text-znz-green">400+</span></div>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
