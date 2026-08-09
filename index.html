@@ -37,6 +37,35 @@
             }
         }
     </script>
+
+    <!-- IMMEDIATE AUTH GUARD: Prevents rendering if not logged in -->
+    <script>
+        (function guardAuthSession() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userFromParam = urlParams.get('user');
+            const avatarFromParam = urlParams.get('avatar');
+
+            // If query params exist (coming back from OAuth callback), persist them
+            if (userFromParam) {
+                localStorage.setItem('znz_user', userFromParam);
+                localStorage.setItem('znz_logged_in', 'true');
+            }
+            if (avatarFromParam) {
+                localStorage.setItem('znz_avatar', avatarFromParam);
+            }
+
+            // Check if any valid auth token/session exists
+            const isLoggedIn = localStorage.getItem('znz_logged_in') === 'true' ||
+                               localStorage.getItem('znz_user') ||
+                               localStorage.getItem('discord_user') ||
+                               localStorage.getItem('user');
+
+            // If not authenticated, bounce to the login portal
+            if (!isLoggedIn) {
+                window.location.replace('/login/');
+            }
+        })();
+    </script>
     
     <style>
         body {
@@ -638,7 +667,7 @@
             chevron.classList.toggle('rotate-180');
         }
 
-        // Complete Logout Handler
+        // Complete Logout Handler (Wipes all session storage and redirects to /login/)
         function handleLogout() {
             localStorage.clear();
             sessionStorage.clear();
