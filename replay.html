@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZNZ | XAUUSD Bar Replay Engine</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        znz: {
+                            bg: '#050507',
+                            sidebar: '#0A0B0E',
+                            card: '#0D0F17',
+                            border: 'rgba(255, 255, 255, 0.08)',
+                            purple: '#6366F1',
+                            green: '#10B981',
+                            red: '#EF4444',
+                            muted: '#8E95A5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lightweight Charts Library -->
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+    <style>
+        body {
+            background-color: #050507;
+            color: #F3F4F6;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow: hidden;
+        }
+
+        .glass-card {
+            background: rgba(13, 15, 23, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col bg-znz-bg">
+
+    <!-- Top Navigation & Replay Controller Bar -->
+    <header class="h-16 border-b border-znz-border px-4 sm:px-6 flex items-center justify-between bg-znz-sidebar/90 backdrop-blur-md z-10">
+        
+        <!-- Left: Back Button & Symbol Title -->
+        <div class="flex items-center gap-4">
+            <a href="/" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-znz-muted hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </a>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-extrabold text-white text-sm sm:text-base">XAU / USD</h1>
+                    <span class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/30">REPLAY MODE</span>
+                </div>
+                <p id="candle-time-display" class="text-[11px] text-znz-muted">Selecting cut-off point...</p>
+            </div>
+        </div>
+
+        <!-- Center: Replay Controls -->
+        <div class="flex items-center gap-2 bg-black/60 p-1.5 rounded-xl border border-znz-border">
+            
+            <!-- Cut Date Selector -->
+            <input type="date" id="replay-date" class="bg-znz-card text-xs text-white px-2.5 py-1.5 rounded-lg border border-znz-border focus:outline-none focus:border-znz-purple">
+
+            <!-- Jump to Date Button -->
+            <button onclick="jumpToCutDate()" class="px-3 py-1.5 bg-znz-purple hover:bg-indigo-600 text-white font-bold text-xs rounded-lg transition">
+                Cut Chart
+            </button>
+
+            <div class="h-4 w-px bg-znz-border mx-1"></div>
+
+            <!-- Play / Pause -->
+            <button id="btn-play" onclick="togglePlay()" class="p-2 rounded-lg bg-znz-green/20 hover:bg-znz-green/30 text-znz-green transition">
+                <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+
+            <!-- Step 1 Candle Forward -->
+            <button onclick="stepForward()" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
+
+            <!-- Speed Control -->
+            <select id="replay-speed" onchange="changeSpeed()" class="bg-znz-card text-xs text-white px-2 py-1.5 rounded-lg border border-znz-border focus:outline-none">
+                <option value="1000">1s / bar</option>
+                <option value="500" selected>0.5s / bar</option>
+                <option value="200">0.2s / bar</option>
+            </select>
+        </div>
+
+        <!-- Right: Current Price Indicator -->
+        <div class="hidden md:flex items-center gap-3">
+            <span class="text-xs text-znz-muted font-medium">Replay Price:</span>
+            <span id="replay-price" class="text-base font-extrabold text-white tracking-tight">$0.00</span>
+        </div>
+    </header>
+
+    <!-- Main Interactive Chart Container -->
+    <div class="flex-1 w-full relative">
+        <div id="chart-container" class="w-full h-full"></div>
+    </div>
+
+    <!-- Replay Controller Logic -->
+    <script>
+        let chart, candlestickSeries, volumeSeries;
+        let fullCandleData = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let playInterval = null;
+        let playSpeed = 500;
+
+        // Initialize Lightweight Chart Engine
+        function initChart() {
+            const container = document.getElementById('chart-container');
+            chart = LightweightCharts.createChart(container, {
+                layout: {
+                    backgroundColor: '#050507',
+                    textColor: '#8E95A5',
+                },
+                grid: {
+                    vertLines: { color: 'rgba(255, 255, 255, 0.04)' },
+                    horzLines: { color: 'rgba(255, 255, 255, 0.04)' },
+                },
+                crosshair: {
+                    mode: LightweightCharts.CrosshairMode.Normal,
+                },
+                priceScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                },
+                timeScale: {
+                    borderColor: 'rgba(255, 255, 255, 0.08)',
+                    timeVisible: true,
+                    secondsVisible: false,
+                },
+            });
+
+            candlestickSeries = chart.addCandlestickSeries({
+                upColor: '#10B981',
+                downColor: '#EF4444',
+                borderDownColor: '#EF4444',
+                borderUpColor: '#10B981',
+                wickDownColor: '#EF4444',
+                wickUpColor: '#10B981',
+            });
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+            });
+
+            generateHistoricalCandles();
+        }
+
+        // Generate Simulated 1,000 XAUUSD Historical Bars
+        function generateHistoricalCandles() {
+            let baseTime = Math.floor(Date.now() / 1000) - (1000 * 900); // 1,000 15m bars back
+            let currentPrice = 4350.00;
+
+            for (let i = 0; i < 1000; i++) {
+                let change = (Math.random() - 0.49) * 8.5;
+                let open = currentPrice;
+                let close = open + change;
+                let high = Math.max(open, close) + Math.random() * 3.5;
+                let low = Math.min(open, close) - Math.random() * 3.5;
+
+                fullCandleData.push({
+                    time: baseTime + (i * 900),
+                    open: parseFloat(open.toFixed(2)),
+                    high: parseFloat(high.toFixed(2)),
+                    low: parseFloat(low.toFixed(2)),
+                    close: parseFloat(close.toFixed(2)),
+                });
+
+                currentPrice = close;
+            }
+
+            // Set initial cut-off at bar 600
+            currentIndex = 600;
+            updateChartState();
+
+            // Set default date input value
+            const cutDate = new Date(fullCandleData[currentIndex].time * 1000).toISOString().split('T')[0];
+            document.getElementById('replay-date').value = cutDate;
+        }
+
+        function updateChartState() {
+            const slicedData = fullCandleData.slice(0, currentIndex + 1);
+            candlestickSeries.setData(slicedData);
+
+            const lastCandle = fullCandleData[currentIndex];
+            if (lastCandle) {
+                document.getElementById('replay-price').innerText = `$${lastCandle.close.toFixed(2)}`;
+                const timeStr = new Date(lastCandle.time * 1000).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                document.getElementById('candle-time-display').innerText = `Bar Date: ${timeStr} WIB`;
+            }
+        }
+
+        function jumpToCutDate() {
+            pause();
+            const selectedDate = document.getElementById('replay-date').value;
+            if (!selectedDate) return;
+
+            const targetTimestamp = Math.floor(new Date(selectedDate).getTime() / 1000);
+            const foundIndex = fullCandleData.findIndex(c => c.time >= targetTimestamp);
+
+            if (foundIndex !== -1) {
+                currentIndex = foundIndex;
+                updateChartState();
+            } else {
+                alert('Date selected is outside historical range.');
+            }
+        }
+
+        function stepForward() {
+            if (currentIndex < fullCandleData.length - 1) {
+                currentIndex++;
+                const nextBar = fullCandleData[currentIndex];
+                candlestickSeries.update(nextBar);
+
+                document.getElementById('replay-price').innerText = `$${nextBar.close.toFixed(2)}`;
+                const timeStr = new Date(nextBar.time * 1000).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
+                document.getElementById('candle-time-display').innerText = `Bar Date: ${timeStr} WIB`;
+            } else {
+                pause();
+            }
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                pause();
+            } else {
+                play();
+            }
+        }
+
+        function play() {
+            isPlaying = true;
+            document.getElementById('btn-play').innerHTML = `<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+            playInterval = setInterval(stepForward, playSpeed);
+        }
+
+        function pause() {
+            isPlaying = false;
+            document.getElementById('btn-play').innerHTML = `<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+            if (playInterval) clearInterval(playInterval);
+        }
+
+        function changeSpeed() {
+            playSpeed = parseInt(document.getElementById('replay-speed').value);
+            if (isPlaying) {
+                pause();
+                play();
+            }
+        }
+
+        window.onload = initChart;
+    </script>
+</body>
+</html>
