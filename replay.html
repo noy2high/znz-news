@@ -62,13 +62,22 @@
             align-items: center;
             padding-top: 12px;
             gap: 12px;
-            z-index: 10;
+            z-index: 20;
         }
 
         #chart-container {
             flex: 1;
             height: 100%;
             position: relative;
+        }
+
+        #drawing-svg-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
         }
 
         .tool-btn {
@@ -90,12 +99,30 @@
             color: #6366F1;
             border: 1px solid rgba(99, 102, 241, 0.4);
         }
+
+        .tf-btn {
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            color: #8E95A5;
+            transition: all 0.2s;
+        }
+        .tf-btn:hover {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .tf-btn.active {
+            color: #FFFFFF;
+            background: rgba(99, 102, 241, 0.25);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+        }
     </style>
 </head>
 <body class="flex flex-col bg-znz-bg relative">
 
     <!-- Top Navigation & Replay Controller Bar -->
-    <header class="h-16 border-b border-znz-border px-4 sm:px-6 flex items-center justify-between bg-znz-sidebar flex-shrink-0 z-20">
+    <header class="h-16 border-b border-znz-border px-4 sm:px-6 flex items-center justify-between bg-znz-sidebar flex-shrink-0 z-30">
         
         <!-- Left: Back Button & Symbol Title -->
         <div class="flex items-center gap-3 sm:gap-4">
@@ -109,6 +136,18 @@
                 </div>
                 <p id="candle-time-display" class="text-[11px] text-znz-muted">Initializing chart engine...</p>
             </div>
+        </div>
+
+        <!-- Timeframe Selectors (1m to 1M) -->
+        <div class="hidden xl:flex items-center gap-1 bg-black/50 p-1 rounded-xl border border-znz-border">
+            <button onclick="changeTimeframe('1m')" id="tf-1m" class="tf-btn">1m</button>
+            <button onclick="changeTimeframe('5m')" id="tf-5m" class="tf-btn">5m</button>
+            <button onclick="changeTimeframe('15m')" id="tf-15m" class="tf-btn active">15m</button>
+            <button onclick="changeTimeframe('1h')" id="tf-1h" class="tf-btn">1h</button>
+            <button onclick="changeTimeframe('4h')" id="tf-4h" class="tf-btn">4h</button>
+            <button onclick="changeTimeframe('1d')" id="tf-1D" class="tf-btn">1D</button>
+            <button onclick="changeTimeframe('1w')" id="tf-1W" class="tf-btn">1W</button>
+            <button onclick="changeTimeframe('1M')" id="tf-1M" class="tf-btn">1M</button>
         </div>
 
         <!-- Center: Replay Controls -->
@@ -149,7 +188,7 @@
         </div>
     </header>
 
-    <!-- Main Viewport (Drawing Sidebar + Chart) -->
+    <!-- Main Viewport (Drawing Sidebar + Chart + Interactive Drawing SVG) -->
     <div id="main-viewport">
         
         <!-- Left Tools Bar -->
@@ -164,8 +203,8 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path></svg>
             </button>
 
-            <!-- Trendline -->
-            <button id="tool-trendline" onclick="selectTool('trendline')" class="tool-btn" title="Trendline">
+            <!-- Trendline Tool -->
+            <button id="tool-trendline" onclick="selectTool('trendline')" class="tool-btn" title="Trendline (Click A -> Click B)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5"></path></svg>
             </button>
 
@@ -177,11 +216,13 @@
             </button>
         </div>
 
-        <!-- Chart Container -->
-        <div id="chart-container"></div>
+        <!-- Chart Container + SVG Drawing Overlay Layer -->
+        <div id="chart-container">
+            <svg id="drawing-svg-overlay"></svg>
+        </div>
     </div>
 
-    <!-- Replay Controller & Drawing Engine Script -->
+    <!-- Replay Controller & SVG Drawing Engine Script -->
     <script>
         let chart = null;
         let candlestickSeries = null;
@@ -191,10 +232,15 @@
         let playInterval = null;
         let playSpeed = 500;
         let activeTool = 'cursor';
-        let customPriceLines = [];
+        let currentTimeframe = '15m';
+
+        // Interactive Drawing Overlay State
+        let drawingPoints = [];
+        let currentDrawings = [];
 
         function initChart() {
             const container = document.getElementById('chart-container');
+            const svgOverlay = document.getElementById('drawing-svg-overlay');
             
             chart = LightweightCharts.createChart(container, {
                 width: container.clientWidth,
@@ -229,14 +275,45 @@
                 wickUpColor: '#10B981',
             });
 
-            // Click Handler for Drawing Tools
-            chart.subscribeClick((param) => {
-                if (!param.point || !param.priceScale) return;
-                const price = candlestickSeries.coordinateToPrice(param.point.y);
+            // SVG Interactive Click Handler for Drawings
+            container.addEventListener('click', (e) => {
+                if (activeTool === 'cursor') return;
 
-                if (activeTool === 'hline' && price) {
-                    addHorizontalPriceLine(price);
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                if (activeTool === 'hline') {
+                    // Create Horizontal Line
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', '0');
+                    line.setAttribute('y1', y);
+                    line.setAttribute('x2', '100%');
+                    line.setAttribute('y2', y);
+                    line.setAttribute('stroke', '#6366F1');
+                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('stroke-dasharray', '4');
+                    svgOverlay.appendChild(line);
+                    currentDrawings.push(line);
+
                     selectTool('cursor');
+                } else if (activeTool === 'trendline') {
+                    drawingPoints.push({ x, y });
+
+                    if (drawingPoints.length === 2) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', drawingPoints[0].x);
+                        line.setAttribute('y1', drawingPoints[0].y);
+                        line.setAttribute('x2', drawingPoints[1].x);
+                        line.setAttribute('y2', drawingPoints[1].y);
+                        line.setAttribute('stroke', '#10B981');
+                        line.setAttribute('stroke-width', '2');
+                        svgOverlay.appendChild(line);
+                        currentDrawings.push(line);
+
+                        drawingPoints = [];
+                        selectTool('cursor');
+                    }
                 }
             });
 
@@ -250,36 +327,59 @@
                 }
             });
 
-            loadCandleData();
+            loadCandleData(currentTimeframe);
         }
 
         function selectTool(toolName) {
             activeTool = toolName;
+            drawingPoints = [];
+
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`tool-${toolName}`);
             if (activeBtn) activeBtn.classList.add('active');
-        }
 
-        function addHorizontalPriceLine(priceValue) {
-            const line = candlestickSeries.createPriceLine({
-                price: priceValue,
-                color: '#6366F1',
-                lineWidth: 2,
-                lineStyle: LightweightCharts.LineStyle.Dashed,
-                axisLabelVisible: true,
-                title: 'Key Level',
-            });
-            customPriceLines.push(line);
+            const svgOverlay = document.getElementById('drawing-svg-overlay');
+            if (toolName === 'cursor') {
+                svgOverlay.style.pointerEvents = 'none';
+            } else {
+                svgOverlay.style.pointerEvents = 'auto';
+                svgOverlay.style.cursor = 'crosshair';
+            }
         }
 
         function clearDrawings() {
-            customPriceLines.forEach(line => candlestickSeries.removePriceLine(line));
-            customPriceLines = [];
+            const svgOverlay = document.getElementById('drawing-svg-overlay');
+            svgOverlay.innerHTML = '';
+            currentDrawings = [];
+            drawingPoints = [];
+            selectTool('cursor');
         }
 
-        async function loadCandleData() {
+        function changeTimeframe(tf) {
+            currentTimeframe = tf;
+            document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const tfMap = {
+                '1m': 'tf-1m', '5m': 'tf-5m', '15m': 'tf-15m', 
+                '1h': 'tf-1h', '4h': 'tf-4h', '1d': 'tf-1D', 
+                '1w': 'tf-1W', '1M': 'tf-1M'
+            };
+            if (tfMap[tf]) document.getElementById(tfMap[tf]).classList.add('active');
+
+            pause();
+            loadCandleData(tf);
+        }
+
+        async function loadCandleData(interval) {
+            const apiIntervalMap = {
+                '1m': '1m', '5m': '5m', '15m': '15m',
+                '1h': '1h', '4h': '4h', '1d': '1d',
+                '1w': '1w', '1M': '1m'
+            };
+
             try {
-                const response = await fetch('https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=15m&limit=1000');
+                const apiTf = apiIntervalMap[interval] || '15m';
+                const response = await fetch(`https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=${apiTf}&limit=1000`);
                 if (response.ok) {
                     const rawData = await response.json();
                     fullCandleData = rawData.map(d => ({
@@ -290,7 +390,7 @@
                         close: parseFloat(d[4])
                     }));
                 } else {
-                    throw new Error("Binance API offline, using fallback data.");
+                    throw new Error("Binance API offline, generating data.");
                 }
             } catch (err) {
                 console.warn(err.message);
@@ -309,7 +409,7 @@
         function generateFallbackCandles() {
             fullCandleData = [];
             let baseTime = Math.floor(Date.now() / 1000) - (1000 * 900);
-            let currentPrice = 4342.00;
+            let currentPrice = 4357.18;
 
             for (let i = 0; i < 1000; i++) {
                 let change = (Math.random() - 0.49) * 6.5;
