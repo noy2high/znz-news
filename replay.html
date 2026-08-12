@@ -135,7 +135,7 @@
         }
         .menu-item {
             display: flex;
-            items-center;
+            align-items: center;
             justify-content: space-between;
             padding: 8px 16px;
             font-size: 13px;
@@ -320,7 +320,7 @@
         </div>
     </div>
 
-    <!-- Replay Controller & Coordinate-Anchored SVG Drawing Engine -->
+    <!-- Replay Controller & Render-Loop SVG Engine -->
     <script>
         let chart = null;
         let candlestickSeries = null;
@@ -332,12 +332,13 @@
         let activeTool = 'cursor';
         let currentTimeframe = '15m';
 
-        // Stored drawing definitions anchored to chart data (Price / Time / Index)
+        // Stored drawing definitions anchored to chart data (Price / Time)
         let drawings = [];
 
         // Interactive Placement States
         let firstPoint = null; 
         let previewTarget = null; 
+        let isMouseDown = false;
 
         function initChart() {
             const container = document.getElementById('chart-container');
@@ -376,13 +377,14 @@
             });
 
             // Smooth re-render listeners for camera pan, vertical axis scale, and logical index moves
-            chart.timeScale().subscribeVisibleTimeRangeChange(() => renderDrawings());
-            chart.timeScale().subscribeVisibleLogicalRangeChange(() => renderDrawings());
+            chart.timeScale().subscribeVisibleTimeRangeChange(() => requestAnimationFrame(renderDrawings));
+            chart.timeScale().subscribeVisibleLogicalRangeChange(() => requestAnimationFrame(renderDrawings));
 
-            // Track mouse movement for live placement guides & rubber-band line previews
+            // Continuously request frame updates during drag interaction to eliminate jitter
+            container.addEventListener('mousedown', () => { isMouseDown = true; });
+            window.addEventListener('mouseup', () => { isMouseDown = false; });
+
             container.addEventListener('mousemove', (e) => {
-                if (activeTool === 'cursor') return;
-
                 const rect = container.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const mouseY = e.clientY - rect.top;
@@ -390,8 +392,13 @@
                 const price = candlestickSeries.coordinateToPrice(mouseY);
                 const time = chart.timeScale().coordinateToTime(mouseX);
 
-                previewTarget = { x: mouseX, y: mouseY, price, time };
-                renderDrawings();
+                if (activeTool !== 'cursor') {
+                    previewTarget = { x: mouseX, y: mouseY, price, time };
+                }
+
+                if (isMouseDown || activeTool !== 'cursor') {
+                    requestAnimationFrame(renderDrawings);
+                }
             });
 
             // Click Handler for Placing Drawings
@@ -520,7 +527,7 @@
             selectTool('cursor');
         }
 
-        // Render drawings anchored to Price / Time with vector math slopes
+        // Render drawings anchored to Price / Time with vector math slopes (WHITE COLOR FOR VISIBILITY)
         function renderDrawings() {
             const svgOverlay = document.getElementById('drawing-svg-overlay');
             svgOverlay.innerHTML = '';
@@ -530,25 +537,25 @@
             const timeScale = chart.timeScale();
             const width = document.getElementById('chart-container').clientWidth;
 
-            // 1. Render Saved Drawings
+            // 1. Render Saved Drawings (WHITE LINES)
             drawings.forEach(d => {
                 if (d.type === 'hline') {
                     const y = candlestickSeries.priceToCoordinate(d.price);
                     if (y !== null) {
-                        const line = createSvgLine(0, y, width, y, '#6366F1', 2, '4');
+                        const line = createSvgLine(0, y, width, y, '#FFFFFF', 2, '4');
                         svgOverlay.appendChild(line);
                     }
                 } else if (d.type === 'vline') {
                     const x = timeScale.timeToCoordinate(d.time);
                     if (x !== null) {
-                        const line = createSvgLine(x, 0, x, '100%', '#6366F1', 2, '4');
+                        const line = createSvgLine(x, 0, x, '100%', '#FFFFFF', 2, '4');
                         svgOverlay.appendChild(line);
                     }
                 } else if (d.type === 'hray') {
                     const x = timeScale.timeToCoordinate(d.time);
                     const y = candlestickSeries.priceToCoordinate(d.price);
                     if (x !== null && y !== null) {
-                        const line = createSvgLine(x, y, width, y, '#6366F1', 2, '4');
+                        const line = createSvgLine(x, y, width, y, '#FFFFFF', 2, '4');
                         svgOverlay.appendChild(line);
                     }
                 } else if (['trendline', 'ray', 'extendedline', 'infoline', 'trendangle'].includes(d.type)) {
@@ -573,13 +580,13 @@
                             renderY2 = dx !== 0 ? y1 + (dy / dx) * (width - x1) : y2;
                         }
 
-                        const line = createSvgLine(renderX1, renderY1, renderX2, renderY2, '#10B981', 2);
+                        const line = createSvgLine(renderX1, renderY1, renderX2, renderY2, '#FFFFFF', 2);
                         svgOverlay.appendChild(line);
 
                         // Endpoint Anchor Circles
-                        createSvgCircle(x1, y1, 4, '#10B981', svgOverlay);
+                        createSvgCircle(x1, y1, 4, '#FFFFFF', svgOverlay);
                         if (d.type !== 'ray' && d.type !== 'extendedline') {
-                            createSvgCircle(x2, y2, 4, '#10B981', svgOverlay);
+                            createSvgCircle(x2, y2, 4, '#FFFFFF', svgOverlay);
                         }
 
                         // Info Line & Trend Angle Badges
@@ -597,32 +604,32 @@
                 }
             });
 
-            // 2. Render Live Rubber-Band Guide Previews
+            // 2. Render Live Rubber-Band Guide Previews (WHITE GUIDES)
             if (previewTarget && activeTool !== 'cursor') {
                 const y = previewTarget.y;
                 const x = previewTarget.x;
 
                 if (activeTool === 'hline') {
-                    const line = createSvgLine(0, y, width, y, '#6366F1', 1.5, '3', '0.7');
+                    const line = createSvgLine(0, y, width, y, '#FFFFFF', 1.5, '3', '0.7');
                     svgOverlay.appendChild(line);
                 } else if (activeTool === 'vline') {
-                    const line = createSvgLine(x, 0, x, '100%', '#6366F1', 1.5, '3', '0.7');
+                    const line = createSvgLine(x, 0, x, '100%', '#FFFFFF', 1.5, '3', '0.7');
                     svgOverlay.appendChild(line);
                 } else if (firstPoint) {
                     const x1 = timeScale.timeToCoordinate(firstPoint.time);
                     const y1 = candlestickSeries.priceToCoordinate(firstPoint.price);
 
                     if (x1 !== null && y1 !== null) {
-                        const line = createSvgLine(x1, y1, x, y, '#10B981', 2, '4', '0.8');
+                        const line = createSvgLine(x1, y1, x, y, '#FFFFFF', 2, '4', '0.8');
                         svgOverlay.appendChild(line);
-                        createSvgCircle(x1, y1, 4, '#10B981', svgOverlay);
+                        createSvgCircle(x1, y1, 4, '#FFFFFF', svgOverlay);
                     }
                 }
             }
         }
 
         // SVG Element Creation Helpers
-        function createSvgLine(x1, y1, x2, y2, color, strokeWidth = 2, dash = '', opacity = '1') {
+        function createSvgLine(x1, y1, x2, y2, color = '#FFFFFF', strokeWidth = 2, dash = '', opacity = '1') {
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             line.setAttribute('x1', x1);
             line.setAttribute('y1', y1);
@@ -635,7 +642,7 @@
             return line;
         }
 
-        function createSvgCircle(cx, cy, r, color, parent) {
+        function createSvgCircle(cx, cy, r, color = '#FFFFFF', parent) {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', cx);
             circle.setAttribute('cy', cy);
