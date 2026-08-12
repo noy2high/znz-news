@@ -63,6 +63,7 @@
             padding-top: 12px;
             gap: 12px;
             z-index: 30;
+            position: relative;
         }
 
         #chart-container {
@@ -89,6 +90,7 @@
             justify-content: center;
             color: #8E95A5;
             transition: all 0.2s ease;
+            position: relative;
         }
         .tool-btn:hover {
             background: rgba(255, 255, 255, 0.08);
@@ -116,6 +118,40 @@
             color: #FFFFFF;
             background: rgba(99, 102, 241, 0.25);
             border: 1px solid rgba(99, 102, 241, 0.4);
+        }
+
+        /* TradingView Style Lines Popup Menu */
+        #lines-menu {
+            position: absolute;
+            top: 12px;
+            left: 56px;
+            width: 230px;
+            background: #13151D;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6);
+            padding: 8px 0;
+            z-index: 50;
+        }
+        .menu-item {
+            display: flex;
+            items-center;
+            justify-content: space-between;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #D1D5DB;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .menu-item:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #FFFFFF;
+        }
+        .menu-item.active {
+            color: #6366F1;
+            font-weight: 700;
+            background: rgba(99, 102, 241, 0.1);
         }
     </style>
 </head>
@@ -187,26 +223,98 @@
         
         <!-- Left Tools Bar -->
         <div id="drawing-toolbar">
+            <!-- Cursor / Pan Tool -->
             <button id="tool-cursor" onclick="selectTool('cursor')" class="tool-btn active" title="Cursor / Pan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"></path></svg>
             </button>
 
-            <button id="tool-hline" onclick="selectTool('hline')" class="tool-btn" title="Horizontal Support/Resistance Line">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path></svg>
-            </button>
-
-            <button id="tool-trendline" onclick="selectTool('trendline')" class="tool-btn" title="Trendline (Click Point 1 -> Click Point 2)">
+            <!-- Lines Category Trigger -->
+            <button id="tool-lines-category" onclick="toggleLinesMenu(event)" class="tool-btn" title="Lines Category">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5"></path></svg>
             </button>
 
             <div class="w-6 h-px bg-znz-border my-1"></div>
 
+            <!-- Clear All Drawings -->
             <button onclick="clearDrawings()" class="tool-btn hover:text-znz-red" title="Clear All Drawings">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </button>
+
+            <!-- Pop-up Lines Category Menu -->
+            <div id="lines-menu" class="hidden">
+                <div class="px-4 py-1 text-[10px] font-bold text-znz-muted uppercase tracking-wider">LINES</div>
+                
+                <div onclick="setLineTool('trendline')" class="menu-item" id="item-trendline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5"/></svg>
+                        Trendline
+                    </span>
+                    <span class="text-[10px] text-znz-muted">Alt + T</span>
+                </div>
+
+                <div onclick="setLineTool('ray')" class="menu-item" id="item-ray">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5M20 5h-6M20 5v6"/></svg>
+                        Ray
+                    </span>
+                </div>
+
+                <div onclick="setLineTool('infoline')" class="menu-item" id="item-infoline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5M12 8h4v4h-4z"/></svg>
+                        Info line
+                    </span>
+                </div>
+
+                <div onclick="setLineTool('extendedline')" class="menu-item" id="item-extendedline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 21L22 3"/></svg>
+                        Extended line
+                    </span>
+                </div>
+
+                <div onclick="setLineTool('trendangle')" class="menu-item" id="item-trendangle">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19h16M4 19L16 7"/></svg>
+                        Trend angle
+                    </span>
+                </div>
+
+                <div onclick="setLineTool('hline')" class="menu-item" id="item-hline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"/></svg>
+                        Horizontal line
+                    </span>
+                    <span class="text-[10px] text-znz-muted">Alt + H</span>
+                </div>
+
+                <div onclick="setLineTool('hray')" class="menu-item" id="item-hray">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12h8M12 12a2 2 0 100-4 2 2 0 000 4z"/></svg>
+                        Horizontal ray
+                    </span>
+                    <span class="text-[10px] text-znz-muted">Alt + J</span>
+                </div>
+
+                <div onclick="setLineTool('vline')" class="menu-item" id="item-vline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16"/></svg>
+                        Vertical line
+                    </span>
+                    <span class="text-[10px] text-znz-muted">Alt + V</span>
+                </div>
+
+                <div onclick="setLineTool('crossline')" class="menu-item" id="item-crossline">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16M4 12h16"/></svg>
+                        Crossline
+                    </span>
+                    <span class="text-[10px] text-znz-muted">Alt + C</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Chart Container + SVG Drawing Overlay Layer -->
+        <!-- Chart Container + SVG Overlay Layer -->
         <div id="chart-container">
             <svg id="drawing-svg-overlay"></svg>
         </div>
@@ -224,18 +332,15 @@
         let activeTool = 'cursor';
         let currentTimeframe = '15m';
 
-        // Stored drawing definitions anchored to chart data (Price / Time)
-        // Objects: { type: 'hline', price: number }
-        //      or { type: 'trendline', time1: number, price1: number, time2: number, price2: number }
+        // Stored drawing definitions anchored to chart data (Price / Time / Index)
         let drawings = [];
 
         // Interactive Placement States
-        let firstTrendPoint = null; // { time, price }
-        let previewTarget = null;   // { x, y, price, time }
+        let firstPoint = null; 
+        let previewTarget = null; 
 
         function initChart() {
             const container = document.getElementById('chart-container');
-            const svgOverlay = document.getElementById('drawing-svg-overlay');
             
             chart = LightweightCharts.createChart(container, {
                 width: container.clientWidth,
@@ -270,10 +375,11 @@
                 wickUpColor: '#10B981',
             });
 
-            // Re-render drawings whenever the camera pans, zooms, or time scale updates
+            // Smooth re-render listeners for camera pan, vertical axis scale, and logical index moves
+            chart.timeScale().subscribeVisibleTimeRangeChange(() => renderDrawings());
             chart.timeScale().subscribeVisibleLogicalRangeChange(() => renderDrawings());
 
-            // Track mouse movement for live placement guide preview
+            // Track mouse movement for live placement guides & rubber-band line previews
             container.addEventListener('mousemove', (e) => {
                 if (activeTool === 'cursor') return;
 
@@ -304,22 +410,33 @@
                 if (activeTool === 'hline') {
                     drawings.push({ type: 'hline', price });
                     selectTool('cursor');
-                } else if (activeTool === 'trendline') {
+                } else if (activeTool === 'vline') {
+                    if (!time) return;
+                    drawings.push({ type: 'vline', time });
+                    selectTool('cursor');
+                } else if (activeTool === 'crossline') {
+                    if (!time) return;
+                    drawings.push({ type: 'hline', price });
+                    drawings.push({ type: 'vline', time });
+                    selectTool('cursor');
+                } else if (activeTool === 'hray') {
+                    if (!time) return;
+                    drawings.push({ type: 'hray', price, time });
+                    selectTool('cursor');
+                } else if (['trendline', 'ray', 'extendedline', 'infoline', 'trendangle'].includes(activeTool)) {
                     if (!time) return;
 
-                    if (!firstTrendPoint) {
-                        // Point A selected
-                        firstTrendPoint = { time, price };
+                    if (!firstPoint) {
+                        firstPoint = { time, price, x: mouseX, y: mouseY };
                     } else {
-                        // Point B selected -> Save trendline
                         drawings.push({
-                            type: 'trendline',
-                            time1: firstTrendPoint.time,
-                            price1: firstTrendPoint.price,
+                            type: activeTool,
+                            time1: firstPoint.time,
+                            price1: firstPoint.price,
                             time2: time,
                             price2: price
                         });
-                        firstTrendPoint = null;
+                        firstPoint = null;
                         selectTool('cursor');
                     }
                 }
@@ -337,111 +454,54 @@
                 }
             });
 
-            loadCandleData(currentTimeframe);
-        }
-
-        // Render drawings by converting stored (Price, Time) to current Screen Coordinates
-        function renderDrawings() {
-            const svgOverlay = document.getElementById('drawing-svg-overlay');
-            svgOverlay.innerHTML = '';
-
-            if (!candlestickSeries || !chart) return;
-
-            const timeScale = chart.timeScale();
-
-            // 1. Render all saved drawings
-            drawings.forEach(d => {
-                if (d.type === 'hline') {
-                    const y = candlestickSeries.priceToCoordinate(d.price);
-                    if (y !== null) {
-                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        line.setAttribute('x1', '0');
-                        line.setAttribute('y1', y);
-                        line.setAttribute('x2', '100%');
-                        line.setAttribute('y2', y);
-                        line.setAttribute('stroke', '#6366F1');
-                        line.setAttribute('stroke-width', '2');
-                        line.setAttribute('stroke-dasharray', '4');
-                        svgOverlay.appendChild(line);
-                    }
-                } else if (d.type === 'trendline') {
-                    const x1 = timeScale.timeToCoordinate(d.time1);
-                    const y1 = candlestickSeries.priceToCoordinate(d.price1);
-                    const x2 = timeScale.timeToCoordinate(d.time2);
-                    const y2 = candlestickSeries.priceToCoordinate(d.price2);
-
-                    if (x1 !== null && y1 !== null && x2 !== null && y2 !== null) {
-                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        line.setAttribute('x1', x1);
-                        line.setAttribute('y1', y1);
-                        line.setAttribute('x2', x2);
-                        line.setAttribute('y2', y2);
-                        line.setAttribute('stroke', '#10B981');
-                        line.setAttribute('stroke-width', '2');
-                        svgOverlay.appendChild(line);
-
-                        // End point dots
-                        [ {x: x1, y: y1}, {x: x2, y: y2} ].forEach(pt => {
-                            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                            circle.setAttribute('cx', pt.x);
-                            circle.setAttribute('cy', pt.y);
-                            circle.setAttribute('r', '4');
-                            circle.setAttribute('fill', '#10B981');
-                            svgOverlay.appendChild(circle);
-                        });
-                    }
+            // Hotkey Shortcuts Handler
+            window.addEventListener('keydown', (e) => {
+                if (e.altKey) {
+                    const key = e.key.toLowerCase();
+                    if (key === 't') setLineTool('trendline');
+                    if (key === 'h') setLineTool('hline');
+                    if (key === 'j') setLineTool('hray');
+                    if (key === 'v') setLineTool('vline');
+                    if (key === 'c') setLineTool('crossline');
                 }
             });
 
-            // 2. Render live guide / Rubber-band previews
-            if (previewTarget && activeTool !== 'cursor') {
-                if (activeTool === 'hline') {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', '0');
-                    line.setAttribute('y1', previewTarget.y);
-                    line.setAttribute('x2', '100%');
-                    line.setAttribute('y2', previewTarget.y);
-                    line.setAttribute('stroke', '#6366F1');
-                    line.setAttribute('stroke-width', '1.5');
-                    line.setAttribute('stroke-dasharray', '3');
-                    line.setAttribute('opacity', '0.7');
-                    svgOverlay.appendChild(line);
-                } else if (activeTool === 'trendline' && firstTrendPoint) {
-                    const x1 = timeScale.timeToCoordinate(firstTrendPoint.time);
-                    const y1 = candlestickSeries.priceToCoordinate(firstTrendPoint.price);
+            loadCandleData(currentTimeframe);
+        }
 
-                    if (x1 !== null && y1 !== null) {
-                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        line.setAttribute('x1', x1);
-                        line.setAttribute('y1', y1);
-                        line.setAttribute('x2', previewTarget.x);
-                        line.setAttribute('y2', previewTarget.y);
-                        line.setAttribute('stroke', '#10B981');
-                        line.setAttribute('stroke-width', '2');
-                        line.setAttribute('stroke-dasharray', '4');
-                        line.setAttribute('opacity', '0.8');
-                        svgOverlay.appendChild(line);
+        function toggleLinesMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('lines-menu');
+            menu.classList.toggle('hidden');
+        }
 
-                        // Origin dot
-                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                        circle.setAttribute('cx', x1);
-                        circle.setAttribute('cy', y1);
-                        circle.setAttribute('r', '4');
-                        circle.setAttribute('fill', '#10B981');
-                        svgOverlay.appendChild(circle);
-                    }
-                }
+        document.addEventListener('click', () => {
+            const menu = document.getElementById('lines-menu');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
             }
+        });
+
+        function setLineTool(toolName) {
+            selectTool(toolName);
+            document.getElementById('lines-menu').classList.add('hidden');
         }
 
         function selectTool(toolName) {
             activeTool = toolName;
-            firstTrendPoint = null;
+            firstPoint = null;
             previewTarget = null;
 
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.getElementById(`tool-${toolName}`);
-            if (activeBtn) activeBtn.classList.add('active');
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+
+            if (toolName !== 'cursor') {
+                document.getElementById('tool-lines-category').classList.add('active');
+                const menuItem = document.getElementById(`item-${toolName}`);
+                if (menuItem) menuItem.classList.add('active');
+            } else {
+                document.getElementById('tool-cursor').classList.add('active');
+            }
 
             const svgOverlay = document.getElementById('drawing-svg-overlay');
             if (toolName === 'cursor') {
@@ -455,9 +515,145 @@
 
         function clearDrawings() {
             drawings = [];
-            firstTrendPoint = null;
+            firstPoint = null;
             previewTarget = null;
             selectTool('cursor');
+        }
+
+        // Render drawings anchored to Price / Time with vector math slopes
+        function renderDrawings() {
+            const svgOverlay = document.getElementById('drawing-svg-overlay');
+            svgOverlay.innerHTML = '';
+
+            if (!candlestickSeries || !chart) return;
+
+            const timeScale = chart.timeScale();
+            const width = document.getElementById('chart-container').clientWidth;
+
+            // 1. Render Saved Drawings
+            drawings.forEach(d => {
+                if (d.type === 'hline') {
+                    const y = candlestickSeries.priceToCoordinate(d.price);
+                    if (y !== null) {
+                        const line = createSvgLine(0, y, width, y, '#6366F1', 2, '4');
+                        svgOverlay.appendChild(line);
+                    }
+                } else if (d.type === 'vline') {
+                    const x = timeScale.timeToCoordinate(d.time);
+                    if (x !== null) {
+                        const line = createSvgLine(x, 0, x, '100%', '#6366F1', 2, '4');
+                        svgOverlay.appendChild(line);
+                    }
+                } else if (d.type === 'hray') {
+                    const x = timeScale.timeToCoordinate(d.time);
+                    const y = candlestickSeries.priceToCoordinate(d.price);
+                    if (x !== null && y !== null) {
+                        const line = createSvgLine(x, y, width, y, '#6366F1', 2, '4');
+                        svgOverlay.appendChild(line);
+                    }
+                } else if (['trendline', 'ray', 'extendedline', 'infoline', 'trendangle'].includes(d.type)) {
+                    const x1 = timeScale.timeToCoordinate(d.time1);
+                    const y1 = candlestickSeries.priceToCoordinate(d.price1);
+                    const x2 = timeScale.timeToCoordinate(d.time2);
+                    const y2 = candlestickSeries.priceToCoordinate(d.price2);
+
+                    if (x1 !== null && y1 !== null && x2 !== null && y2 !== null) {
+                        let renderX1 = x1, renderY1 = y1, renderX2 = x2, renderY2 = y2;
+
+                        const dx = x2 - x1;
+                        const dy = y2 - y1;
+
+                        if (d.type === 'ray') {
+                            renderX2 = width;
+                            renderY2 = dx !== 0 ? y1 + (dy / dx) * (width - x1) : y2;
+                        } else if (d.type === 'extendedline') {
+                            renderX1 = 0;
+                            renderY1 = dx !== 0 ? y1 + (dy / dx) * (0 - x1) : y1;
+                            renderX2 = width;
+                            renderY2 = dx !== 0 ? y1 + (dy / dx) * (width - x1) : y2;
+                        }
+
+                        const line = createSvgLine(renderX1, renderY1, renderX2, renderY2, '#10B981', 2);
+                        svgOverlay.appendChild(line);
+
+                        // Endpoint Anchor Circles
+                        createSvgCircle(x1, y1, 4, '#10B981', svgOverlay);
+                        if (d.type !== 'ray' && d.type !== 'extendedline') {
+                            createSvgCircle(x2, y2, 4, '#10B981', svgOverlay);
+                        }
+
+                        // Info Line & Trend Angle Badges
+                        if (d.type === 'infoline') {
+                            const pDiff = (d.price2 - d.price1).toFixed(2);
+                            const pPct = (((d.price2 - d.price1) / d.price1) * 100).toFixed(2);
+                            const text = createSvgText((x1 + x2) / 2, (y1 + y2) / 2 - 10, `${pDiff} (${pPct}%)`);
+                            svgOverlay.appendChild(text);
+                        } else if (d.type === 'trendangle') {
+                            const angle = Math.round(Math.atan2(-dy, dx) * (180 / Math.PI));
+                            const text = createSvgText(x2 + 10, y2, `${angle}°`);
+                            svgOverlay.appendChild(text);
+                        }
+                    }
+                }
+            });
+
+            // 2. Render Live Rubber-Band Guide Previews
+            if (previewTarget && activeTool !== 'cursor') {
+                const y = previewTarget.y;
+                const x = previewTarget.x;
+
+                if (activeTool === 'hline') {
+                    const line = createSvgLine(0, y, width, y, '#6366F1', 1.5, '3', '0.7');
+                    svgOverlay.appendChild(line);
+                } else if (activeTool === 'vline') {
+                    const line = createSvgLine(x, 0, x, '100%', '#6366F1', 1.5, '3', '0.7');
+                    svgOverlay.appendChild(line);
+                } else if (firstPoint) {
+                    const x1 = timeScale.timeToCoordinate(firstPoint.time);
+                    const y1 = candlestickSeries.priceToCoordinate(firstPoint.price);
+
+                    if (x1 !== null && y1 !== null) {
+                        const line = createSvgLine(x1, y1, x, y, '#10B981', 2, '4', '0.8');
+                        svgOverlay.appendChild(line);
+                        createSvgCircle(x1, y1, 4, '#10B981', svgOverlay);
+                    }
+                }
+            }
+        }
+
+        // SVG Element Creation Helpers
+        function createSvgLine(x1, y1, x2, y2, color, strokeWidth = 2, dash = '', opacity = '1') {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('stroke', color);
+            line.setAttribute('stroke-width', strokeWidth);
+            if (dash) line.setAttribute('stroke-dasharray', dash);
+            line.setAttribute('opacity', opacity);
+            return line;
+        }
+
+        function createSvgCircle(cx, cy, r, color, parent) {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', cx);
+            circle.setAttribute('cy', cy);
+            circle.setAttribute('r', r);
+            circle.setAttribute('fill', color);
+            parent.appendChild(circle);
+        }
+
+        function createSvgText(x, y, str) {
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', x);
+            text.setAttribute('y', y);
+            text.setAttribute('fill', '#FFFFFF');
+            text.setAttribute('font-size', '11');
+            text.setAttribute('font-weight', 'bold');
+            text.setAttribute('text-anchor', 'middle');
+            text.textContent = str;
+            return text;
         }
 
         function changeTimeframe(tf) {
