@@ -62,7 +62,7 @@
             align-items: center;
             padding-top: 12px;
             gap: 12px;
-            z-index: 20;
+            z-index: 30;
         }
 
         #chart-container {
@@ -77,7 +77,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 10;
+            z-index: 20;
         }
 
         .tool-btn {
@@ -152,28 +152,22 @@
 
         <!-- Center: Replay Controls -->
         <div class="flex items-center gap-1.5 sm:gap-2 bg-black/60 p-1.5 rounded-xl border border-znz-border">
-            
-            <!-- Cut Date Selector -->
             <input type="date" id="replay-date" class="bg-znz-card text-xs text-white px-2 py-1.5 rounded-lg border border-znz-border focus:outline-none focus:border-znz-purple">
 
-            <!-- Jump to Date Button -->
             <button onclick="jumpToCutDate()" class="px-2.5 sm:px-3 py-1.5 bg-znz-purple hover:bg-indigo-600 text-white font-bold text-xs rounded-lg transition">
                 Cut
             </button>
 
             <div class="h-4 w-px bg-znz-border mx-0.5 sm:mx-1"></div>
 
-            <!-- Play / Pause -->
             <button id="btn-play" onclick="togglePlay()" class="p-1.5 sm:p-2 rounded-lg bg-znz-green/20 hover:bg-znz-green/30 text-znz-green transition">
                 <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </button>
 
-            <!-- Step 1 Candle Forward -->
             <button onclick="stepForward()" class="p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
 
-            <!-- Speed Control -->
             <select id="replay-speed" onchange="changeSpeed()" class="bg-znz-card text-xs text-white px-1.5 py-1.5 rounded-lg border border-znz-border focus:outline-none">
                 <option value="1000">1s</option>
                 <option value="500" selected>0.5s</option>
@@ -188,29 +182,25 @@
         </div>
     </header>
 
-    <!-- Main Viewport (Drawing Sidebar + Chart + Interactive Drawing SVG) -->
+    <!-- Main Viewport -->
     <div id="main-viewport">
         
         <!-- Left Tools Bar -->
         <div id="drawing-toolbar">
-            <!-- Cursor / Pan Tool -->
             <button id="tool-cursor" onclick="selectTool('cursor')" class="tool-btn active" title="Cursor / Pan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"></path></svg>
             </button>
 
-            <!-- Horizontal Price Line -->
             <button id="tool-hline" onclick="selectTool('hline')" class="tool-btn" title="Horizontal Support/Resistance Line">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16"></path></svg>
             </button>
 
-            <!-- Trendline Tool -->
-            <button id="tool-trendline" onclick="selectTool('trendline')" class="tool-btn" title="Trendline (Click A -> Click B)">
+            <button id="tool-trendline" onclick="selectTool('trendline')" class="tool-btn" title="Trendline (Click Point 1 -> Click Point 2)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 19L20 5"></path></svg>
             </button>
 
             <div class="w-6 h-px bg-znz-border my-1"></div>
 
-            <!-- Clear Drawings -->
             <button onclick="clearDrawings()" class="tool-btn hover:text-znz-red" title="Clear All Drawings">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </button>
@@ -222,7 +212,7 @@
         </div>
     </div>
 
-    <!-- Replay Controller & SVG Drawing Engine Script -->
+    <!-- Replay Controller & Coordinate-Anchored SVG Drawing Engine -->
     <script>
         let chart = null;
         let candlestickSeries = null;
@@ -234,9 +224,14 @@
         let activeTool = 'cursor';
         let currentTimeframe = '15m';
 
-        // Interactive Drawing Overlay State
-        let drawingPoints = [];
-        let currentDrawings = [];
+        // Stored drawing definitions anchored to chart data (Price / Time)
+        // Objects: { type: 'hline', price: number }
+        //      or { type: 'trendline', time1: number, price1: number, time2: number, price2: number }
+        let drawings = [];
+
+        // Interactive Placement States
+        let firstTrendPoint = null; // { time, price }
+        let previewTarget = null;   // { x, y, price, time }
 
         function initChart() {
             const container = document.getElementById('chart-container');
@@ -275,64 +270,174 @@
                 wickUpColor: '#10B981',
             });
 
-            // SVG Interactive Click Handler for Drawings
+            // Re-render drawings whenever the camera pans, zooms, or time scale updates
+            chart.timeScale().subscribeVisibleLogicalRangeChange(() => renderDrawings());
+
+            // Track mouse movement for live placement guide preview
+            container.addEventListener('mousemove', (e) => {
+                if (activeTool === 'cursor') return;
+
+                const rect = container.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const price = candlestickSeries.coordinateToPrice(mouseY);
+                const time = chart.timeScale().coordinateToTime(mouseX);
+
+                previewTarget = { x: mouseX, y: mouseY, price, time };
+                renderDrawings();
+            });
+
+            // Click Handler for Placing Drawings
             container.addEventListener('click', (e) => {
                 if (activeTool === 'cursor') return;
 
                 const rect = container.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                const price = candlestickSeries.coordinateToPrice(mouseY);
+                const time = chart.timeScale().coordinateToTime(mouseX);
+
+                if (!price) return;
 
                 if (activeTool === 'hline') {
-                    // Create Horizontal Line
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', '0');
-                    line.setAttribute('y1', y);
-                    line.setAttribute('x2', '100%');
-                    line.setAttribute('y2', y);
-                    line.setAttribute('stroke', '#6366F1');
-                    line.setAttribute('stroke-width', '2');
-                    line.setAttribute('stroke-dasharray', '4');
-                    svgOverlay.appendChild(line);
-                    currentDrawings.push(line);
-
+                    drawings.push({ type: 'hline', price });
                     selectTool('cursor');
                 } else if (activeTool === 'trendline') {
-                    drawingPoints.push({ x, y });
+                    if (!time) return;
 
-                    if (drawingPoints.length === 2) {
-                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                        line.setAttribute('x1', drawingPoints[0].x);
-                        line.setAttribute('y1', drawingPoints[0].y);
-                        line.setAttribute('x2', drawingPoints[1].x);
-                        line.setAttribute('y2', drawingPoints[1].y);
-                        line.setAttribute('stroke', '#10B981');
-                        line.setAttribute('stroke-width', '2');
-                        svgOverlay.appendChild(line);
-                        currentDrawings.push(line);
-
-                        drawingPoints = [];
+                    if (!firstTrendPoint) {
+                        // Point A selected
+                        firstTrendPoint = { time, price };
+                    } else {
+                        // Point B selected -> Save trendline
+                        drawings.push({
+                            type: 'trendline',
+                            time1: firstTrendPoint.time,
+                            price1: firstTrendPoint.price,
+                            time2: time,
+                            price2: price
+                        });
+                        firstTrendPoint = null;
                         selectTool('cursor');
                     }
                 }
+                renderDrawings();
             });
 
-            // Automatic Resize Observer
+            // Automatic Window Resize Handler
             window.addEventListener('resize', () => {
                 if (chart && container) {
                     chart.applyOptions({
                         width: container.clientWidth,
                         height: container.clientHeight,
                     });
+                    renderDrawings();
                 }
             });
 
             loadCandleData(currentTimeframe);
         }
 
+        // Render drawings by converting stored (Price, Time) to current Screen Coordinates
+        function renderDrawings() {
+            const svgOverlay = document.getElementById('drawing-svg-overlay');
+            svgOverlay.innerHTML = '';
+
+            if (!candlestickSeries || !chart) return;
+
+            const timeScale = chart.timeScale();
+
+            // 1. Render all saved drawings
+            drawings.forEach(d => {
+                if (d.type === 'hline') {
+                    const y = candlestickSeries.priceToCoordinate(d.price);
+                    if (y !== null) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', '0');
+                        line.setAttribute('y1', y);
+                        line.setAttribute('x2', '100%');
+                        line.setAttribute('y2', y);
+                        line.setAttribute('stroke', '#6366F1');
+                        line.setAttribute('stroke-width', '2');
+                        line.setAttribute('stroke-dasharray', '4');
+                        svgOverlay.appendChild(line);
+                    }
+                } else if (d.type === 'trendline') {
+                    const x1 = timeScale.timeToCoordinate(d.time1);
+                    const y1 = candlestickSeries.priceToCoordinate(d.price1);
+                    const x2 = timeScale.timeToCoordinate(d.time2);
+                    const y2 = candlestickSeries.priceToCoordinate(d.price2);
+
+                    if (x1 !== null && y1 !== null && x2 !== null && y2 !== null) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', x1);
+                        line.setAttribute('y1', y1);
+                        line.setAttribute('x2', x2);
+                        line.setAttribute('y2', y2);
+                        line.setAttribute('stroke', '#10B981');
+                        line.setAttribute('stroke-width', '2');
+                        svgOverlay.appendChild(line);
+
+                        // End point dots
+                        [ {x: x1, y: y1}, {x: x2, y: y2} ].forEach(pt => {
+                            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                            circle.setAttribute('cx', pt.x);
+                            circle.setAttribute('cy', pt.y);
+                            circle.setAttribute('r', '4');
+                            circle.setAttribute('fill', '#10B981');
+                            svgOverlay.appendChild(circle);
+                        });
+                    }
+                }
+            });
+
+            // 2. Render live guide / Rubber-band previews
+            if (previewTarget && activeTool !== 'cursor') {
+                if (activeTool === 'hline') {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', '0');
+                    line.setAttribute('y1', previewTarget.y);
+                    line.setAttribute('x2', '100%');
+                    line.setAttribute('y2', previewTarget.y);
+                    line.setAttribute('stroke', '#6366F1');
+                    line.setAttribute('stroke-width', '1.5');
+                    line.setAttribute('stroke-dasharray', '3');
+                    line.setAttribute('opacity', '0.7');
+                    svgOverlay.appendChild(line);
+                } else if (activeTool === 'trendline' && firstTrendPoint) {
+                    const x1 = timeScale.timeToCoordinate(firstTrendPoint.time);
+                    const y1 = candlestickSeries.priceToCoordinate(firstTrendPoint.price);
+
+                    if (x1 !== null && y1 !== null) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', x1);
+                        line.setAttribute('y1', y1);
+                        line.setAttribute('x2', previewTarget.x);
+                        line.setAttribute('y2', previewTarget.y);
+                        line.setAttribute('stroke', '#10B981');
+                        line.setAttribute('stroke-width', '2');
+                        line.setAttribute('stroke-dasharray', '4');
+                        line.setAttribute('opacity', '0.8');
+                        svgOverlay.appendChild(line);
+
+                        // Origin dot
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', x1);
+                        circle.setAttribute('cy', y1);
+                        circle.setAttribute('r', '4');
+                        circle.setAttribute('fill', '#10B981');
+                        svgOverlay.appendChild(circle);
+                    }
+                }
+            }
+        }
+
         function selectTool(toolName) {
             activeTool = toolName;
-            drawingPoints = [];
+            firstTrendPoint = null;
+            previewTarget = null;
 
             document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById(`tool-${toolName}`);
@@ -345,13 +450,13 @@
                 svgOverlay.style.pointerEvents = 'auto';
                 svgOverlay.style.cursor = 'crosshair';
             }
+            renderDrawings();
         }
 
         function clearDrawings() {
-            const svgOverlay = document.getElementById('drawing-svg-overlay');
-            svgOverlay.innerHTML = '';
-            currentDrawings = [];
-            drawingPoints = [];
+            drawings = [];
+            firstTrendPoint = null;
+            previewTarget = null;
             selectTool('cursor');
         }
 
@@ -409,7 +514,7 @@
         function generateFallbackCandles() {
             fullCandleData = [];
             let baseTime = Math.floor(Date.now() / 1000) - (1000 * 900);
-            let currentPrice = 4357.18;
+            let currentPrice = 4096.15;
 
             for (let i = 0; i < 1000; i++) {
                 let change = (Math.random() - 0.49) * 6.5;
@@ -444,6 +549,7 @@
             }
 
             chart.timeScale().fitContent();
+            renderDrawings();
         }
 
         function jumpToCutDate() {
@@ -471,6 +577,8 @@
                 document.getElementById('replay-price').innerText = `$${nextBar.close.toFixed(2)}`;
                 const timeStr = new Date(nextBar.time * 1000).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
                 document.getElementById('candle-time-display').innerText = `Bar Date: ${timeStr} WIB`;
+
+                renderDrawings();
             } else {
                 pause();
             }
