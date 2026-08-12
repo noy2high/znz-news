@@ -29,31 +29,38 @@
         }
     </script>
 
-    <!-- Lightweight Charts Library -->
-    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <!-- Lightweight Charts Standalone CDN -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
 
     <style>
-        body {
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
             background-color: #050507;
             color: #F3F4F6;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
         }
 
-        .glass-card {
-            background: rgba(13, 15, 23, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        #chart-wrapper {
+            position: absolute;
+            top: 64px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
         }
     </style>
 </head>
-<body class="h-screen flex flex-col bg-znz-bg">
+<body class="flex flex-col bg-znz-bg relative">
 
     <!-- Top Navigation & Replay Controller Bar -->
-    <header class="h-16 border-b border-znz-border px-4 sm:px-6 flex items-center justify-between bg-znz-sidebar/90 backdrop-blur-md z-10">
+    <header class="h-16 border-b border-znz-border px-4 sm:px-6 flex items-center justify-between bg-znz-sidebar flex-shrink-0 z-20">
         
         <!-- Left: Back Button & Symbol Title -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3 sm:gap-4">
             <a href="/" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-znz-muted hover:text-white transition">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </a>
@@ -62,68 +69,72 @@
                     <h1 class="font-extrabold text-white text-sm sm:text-base">XAU / USD</h1>
                     <span class="bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded border border-amber-500/30">REPLAY MODE</span>
                 </div>
-                <p id="candle-time-display" class="text-[11px] text-znz-muted">Selecting cut-off point...</p>
+                <p id="candle-time-display" class="text-[11px] text-znz-muted">Initializing chart engine...</p>
             </div>
         </div>
 
         <!-- Center: Replay Controls -->
-        <div class="flex items-center gap-2 bg-black/60 p-1.5 rounded-xl border border-znz-border">
+        <div class="flex items-center gap-1.5 sm:gap-2 bg-black/60 p-1.5 rounded-xl border border-znz-border">
             
             <!-- Cut Date Selector -->
-            <input type="date" id="replay-date" class="bg-znz-card text-xs text-white px-2.5 py-1.5 rounded-lg border border-znz-border focus:outline-none focus:border-znz-purple">
+            <input type="date" id="replay-date" class="bg-znz-card text-xs text-white px-2 py-1.5 rounded-lg border border-znz-border focus:outline-none focus:border-znz-purple">
 
             <!-- Jump to Date Button -->
-            <button onclick="jumpToCutDate()" class="px-3 py-1.5 bg-znz-purple hover:bg-indigo-600 text-white font-bold text-xs rounded-lg transition">
-                Cut Chart
+            <button onclick="jumpToCutDate()" class="px-2.5 sm:px-3 py-1.5 bg-znz-purple hover:bg-indigo-600 text-white font-bold text-xs rounded-lg transition">
+                Cut
             </button>
 
-            <div class="h-4 w-px bg-znz-border mx-1"></div>
+            <div class="h-4 w-px bg-znz-border mx-0.5 sm:mx-1"></div>
 
             <!-- Play / Pause -->
-            <button id="btn-play" onclick="togglePlay()" class="p-2 rounded-lg bg-znz-green/20 hover:bg-znz-green/30 text-znz-green transition">
+            <button id="btn-play" onclick="togglePlay()" class="p-1.5 sm:p-2 rounded-lg bg-znz-green/20 hover:bg-znz-green/30 text-znz-green transition">
                 <svg id="icon-play" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </button>
 
             <!-- Step 1 Candle Forward -->
-            <button onclick="stepForward()" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition">
+            <button onclick="stepForward()" class="p-1.5 sm:p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white transition">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
             </button>
 
             <!-- Speed Control -->
-            <select id="replay-speed" onchange="changeSpeed()" class="bg-znz-card text-xs text-white px-2 py-1.5 rounded-lg border border-znz-border focus:outline-none">
-                <option value="1000">1s / bar</option>
-                <option value="500" selected>0.5s / bar</option>
-                <option value="200">0.2s / bar</option>
+            <select id="replay-speed" onchange="changeSpeed()" class="bg-znz-card text-xs text-white px-1.5 py-1.5 rounded-lg border border-znz-border focus:outline-none">
+                <option value="1000">1s</option>
+                <option value="500" selected>0.5s</option>
+                <option value="200">0.2s</option>
             </select>
         </div>
 
         <!-- Right: Current Price Indicator -->
-        <div class="hidden md:flex items-center gap-3">
+        <div class="hidden lg:flex items-center gap-2">
             <span class="text-xs text-znz-muted font-medium">Replay Price:</span>
             <span id="replay-price" class="text-base font-extrabold text-white tracking-tight">$0.00</span>
         </div>
     </header>
 
-    <!-- Main Interactive Chart Container -->
-    <div class="flex-1 w-full relative">
-        <div id="chart-container" class="w-full h-full"></div>
+    <!-- Main Chart Wrapper -->
+    <div id="chart-wrapper">
+        <div id="chart-container" style="width: 100%; height: 100%;"></div>
     </div>
 
-    <!-- Replay Controller Logic -->
+    <!-- Replay Controller Script -->
     <script>
-        let chart, candlestickSeries, volumeSeries;
+        let chart = null;
+        let candlestickSeries = null;
         let fullCandleData = [];
         let currentIndex = 0;
         let isPlaying = false;
         let playInterval = null;
         let playSpeed = 500;
 
-        // Initialize Lightweight Chart Engine
         function initChart() {
             const container = document.getElementById('chart-container');
+            
+            // Create Chart Instance
             chart = LightweightCharts.createChart(container, {
+                width: container.clientWidth,
+                height: container.clientHeight,
                 layout: {
-                    backgroundColor: '#050507',
+                    background: { type: 'solid', color: '#050507' },
                     textColor: '#8E95A5',
                 },
                 grid: {
@@ -133,7 +144,7 @@
                 crosshair: {
                     mode: LightweightCharts.CrosshairMode.Normal,
                 },
-                priceScale: {
+                rightPriceScale: {
                     borderColor: 'rgba(255, 255, 255, 0.08)',
                 },
                 timeScale: {
@@ -152,25 +163,62 @@
                 wickUpColor: '#10B981',
             });
 
-            // Handle Resize
+            // Automatic Resize Observer
             window.addEventListener('resize', () => {
-                chart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+                if (chart && container) {
+                    chart.applyOptions({
+                        width: container.clientWidth,
+                        height: container.clientHeight,
+                    });
+                }
             });
 
-            generateHistoricalCandles();
+            loadCandleData();
         }
 
-        // Generate Simulated 1,000 XAUUSD Historical Bars
-        function generateHistoricalCandles() {
-            let baseTime = Math.floor(Date.now() / 1000) - (1000 * 900); // 1,000 15m bars back
-            let currentPrice = 4350.00;
+        async function loadCandleData() {
+            try {
+                // Try fetching live PAXG/USDT (Gold proxy) 15m candles from Binance API
+                const response = await fetch('https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=15m&limit=1000');
+                if (response.ok) {
+                    const rawData = await response.json();
+                    fullCandleData = rawData.map(d => ({
+                        time: Math.floor(d[0] / 1000),
+                        open: parseFloat(d[1]),
+                        high: parseFloat(d[2]),
+                        low: parseFloat(d[3]),
+                        close: parseFloat(d[4])
+                    }));
+                } else {
+                    throw new Error("Binance API offline, using fallback data.");
+                }
+            } catch (err) {
+                console.warn(err.message);
+                generateFallbackCandles();
+            }
+
+            // Default cut position at index 700
+            currentIndex = Math.min(700, fullCandleData.length - 1);
+            updateChartState();
+
+            // Set default date input value
+            if (fullCandleData[currentIndex]) {
+                const cutDate = new Date(fullCandleData[currentIndex].time * 1000).toISOString().split('T')[0];
+                document.getElementById('replay-date').value = cutDate;
+            }
+        }
+
+        function generateFallbackCandles() {
+            fullCandleData = [];
+            let baseTime = Math.floor(Date.now() / 1000) - (1000 * 900);
+            let currentPrice = 4342.00;
 
             for (let i = 0; i < 1000; i++) {
-                let change = (Math.random() - 0.49) * 8.5;
+                let change = (Math.random() - 0.49) * 6.5;
                 let open = currentPrice;
                 let close = open + change;
-                let high = Math.max(open, close) + Math.random() * 3.5;
-                let low = Math.min(open, close) - Math.random() * 3.5;
+                let high = Math.max(open, close) + Math.random() * 2.5;
+                let low = Math.min(open, close) - Math.random() * 2.5;
 
                 fullCandleData.push({
                     time: baseTime + (i * 900),
@@ -182,17 +230,11 @@
 
                 currentPrice = close;
             }
-
-            // Set initial cut-off at bar 600
-            currentIndex = 600;
-            updateChartState();
-
-            // Set default date input value
-            const cutDate = new Date(fullCandleData[currentIndex].time * 1000).toISOString().split('T')[0];
-            document.getElementById('replay-date').value = cutDate;
         }
 
         function updateChartState() {
+            if (!candlestickSeries || fullCandleData.length === 0) return;
+
             const slicedData = fullCandleData.slice(0, currentIndex + 1);
             candlestickSeries.setData(slicedData);
 
@@ -202,6 +244,8 @@
                 const timeStr = new Date(lastCandle.time * 1000).toLocaleString('en-US', { timeZone: 'Asia/Jakarta' });
                 document.getElementById('candle-time-display').innerText = `Bar Date: ${timeStr} WIB`;
             }
+
+            chart.timeScale().fitContent();
         }
 
         function jumpToCutDate() {
@@ -216,7 +260,7 @@
                 currentIndex = foundIndex;
                 updateChartState();
             } else {
-                alert('Date selected is outside historical range.');
+                alert('Selected date is outside the loaded range.');
             }
         }
 
@@ -262,7 +306,7 @@
             }
         }
 
-        window.onload = initChart;
+        window.addEventListener('DOMContentLoaded', initChart);
     </script>
 </body>
 </html>
