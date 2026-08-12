@@ -1,29 +1,29 @@
 [
   {
-    "date": "Rabu, 12 Ags 2026 — 19:30 WIB",
-    "isoDate": "2026-08-12T19:30:00+07:00",
-    "event": "US CPI & Core CPI",
+    "date": "Kamis, 20 Ags 2026 — 01:00 WIB",
+    "isoDate": "2026-08-20T01:00:00+07:00",
+    "event": "FOMC Meeting Minutes",
     "actual": "",
-    "forecast": "0.2%",
-    "previous": "-0.4%",
+    "forecast": "-",
+    "previous": "-",
     "trend": "-",
     "strategy": "-",
     "pips": "",
     "result": "PENDING",
-    "notes": "CPI MoM / YoY & Core CPI Release"
+    "notes": "Notulen Rapat Kebijakan Moneter FOMC July"
   },
   {
-    "date": "Kamis, 13 Ags 2026 — 19:30 WIB",
-    "isoDate": "2026-08-13T19:30:00+07:00",
-    "event": "US PPI & Core PPI",
+    "date": "Rabu, 21 Ags 2026 — 20:45 WIB",
+    "isoDate": "2026-08-21T20:45:00+07:00",
+    "event": "US Flash Manufacturing & Services PMI",
     "actual": "",
-    "forecast": "-0.1%",
-    "previous": "-0.3%",
+    "forecast": "53.5",
+    "previous": "54.5",
     "trend": "-",
     "strategy": "-",
     "pips": "",
     "result": "PENDING",
-    "notes": "PPI MoM / YoY & Core PPI Release"
+    "notes": "S&P Global Flash US PMI Release"
   },
   {
     "date": "Kamis, 30 Jul 2026 — 01:00 WIB",
