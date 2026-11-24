@@ -1,5 +1,18 @@
 [
   {
+    "date": "Selasa, 10 Nov 2026 — 20:30 WIB",
+    "isoDate": "2026-11-10T19:30:00+07:00",
+    "event": "US Core Price Index (CPI)",
+    "actual": "0.3%",
+    "forecast": "0.2%",
+    "previous": "0.3%",
+    "trend": "DOWN",
+    "strategy": "SELL",
+    "pips": "400",
+    "result": "WIN",
+    "notes": "CPI m/m & Core CPI Release"
+  },
+  {
     "date": "Jumat, 06 Nov 2026 — 19:30 WIB",
     "isoDate": "2026-11-06T19:30:00+07:00",
     "event": "US Non-Farm Payrolls (NFP)",
